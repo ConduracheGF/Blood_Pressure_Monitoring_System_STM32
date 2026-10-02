@@ -1,0 +1,5 @@
+../Utils/Source/lcd.c:12:13:write_command_with_parameters	24	static
+../Utils/Source/lcd.c:21:6:lcd_init	16	static
+../Utils/Source/lcd.c:56:6:lcd_set_window	24	static
+../Utils/Source/lcd.c:81:6:lcd_write_pixels	16	static
+../Utils/Source/lcd.c:86:6:lcd_fill_rect	24	static

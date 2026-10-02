@@ -1,0 +1,8 @@
+../IO/Source/lcd_io.c:57:13:bus_write_byte	24	static
+../IO/Source/lcd_io.c:69:6:lcd_io_init	8	static
+../IO/Source/lcd_io.c:78:6:lcd_io_reset	8	static
+../IO/Source/lcd_io.c:85:6:lcd_io_write_command	16	static
+../IO/Source/lcd_io.c:93:6:lcd_io_write_data	16	static
+../IO/Source/lcd_io.c:101:6:lcd_io_write_pixels	24	static
+../IO/Source/lcd_io.c:114:6:lcd_io_fill_color	16	static
+../IO/Source/lcd_io.c:127:10:lcd_io_test_data_bus	24	static

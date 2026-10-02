@@ -21,7 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "IO/Header/lcd_io.h"
+#include "IO/Header/sys_io.h"
+#include "Utils/Header/lcd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -94,7 +96,17 @@ int main(void)
   MX_SPI1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  	lcd_io_init();
+  	volatile uint16_t bus_errors = lcd_io_test_data_bus();
 
+  	uint32_t t_start = sys_io_millis();
+  	sys_io_delay_ms(100);
+  	volatile uint32_t elapsed_ms = sys_io_millis() - t_start;
+
+  	lcd_init();
+  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_ROSU);
+  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_VERDE);
+  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_ALBASTRU);
   /* USER CODE END 2 */
 
   /* Infinite loop */
