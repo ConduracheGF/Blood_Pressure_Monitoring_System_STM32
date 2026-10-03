@@ -43,6 +43,7 @@ void lcd_init()
 	write_command_with_parameters(CMD_GAMMA_POSITIVE, gamma_positive, 15);
 	write_command_with_parameters(CMD_GAMMA_NEGATIVE, gamma_negative, 15);
 	write_command_with_parameters(CMD_GAMMA_DIGITAL, gamma_negative, 15);
+	write_command_with_parameters(CMD_MEMORY_ACCESS, (const uint8_t[]){MEMORY_ACCESS_PORTRAIT_BGR}, 1);
 
 	lcd_io_write_command(CMD_DISPLAY_ON);
 	sys_io_delay_ms(25);
@@ -58,7 +59,7 @@ bool lcd_set_window(uint16_t x_start, uint16_t y_start, uint16_t x_finish, uint1
 	if (x_start > x_finish || y_start > y_finish)
 	{
 		return false;
-	} else if (x_finish > LCD_WIDTH || y_finish > LCD_HEIGHT){
+	} else if (x_finish >= LCD_WIDTH || y_finish >= LCD_HEIGHT){
 		return false;
 	}
 

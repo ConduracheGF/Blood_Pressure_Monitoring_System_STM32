@@ -1,0 +1,5 @@
+../Gfx/Source/gfx.c:16:6:gfx_clear	24	static
+../Gfx/Source/gfx.c:22:6:gfx_draw_border	32	static
+../Gfx/Source/gfx.c:35:6:gfx_draw_char	40	static
+../Gfx/Source/gfx.c:73:6:gfx_draw_text	40	static
+../Gfx/Source/gfx.c:82:10:gfx_text_width	16	static

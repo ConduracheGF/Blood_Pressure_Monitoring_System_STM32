@@ -24,6 +24,7 @@
 #include "IO/Header/lcd_io.h"
 #include "IO/Header/sys_io.h"
 #include "Utils/Header/lcd.h"
+#include "Gfx/Header/gfx.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,9 +105,12 @@ int main(void)
   	volatile uint32_t elapsed_ms = sys_io_millis() - t_start;
 
   	lcd_init();
-  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_ROSU);
-  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_VERDE);
-  	lcd_fill_rect(0, 0, LCD_WIDTH, LCD_HEIGHT, CULOARE_ALBASTRU);
+  	gfx_clear(CULOARE_NEGRU);
+  	gfx_draw_text(10, 10, "START", CULOARE_ALB, CULOARE_NEGRU, 3);
+  	gfx_draw_text(10, 60, "SYS 120 DIA 80", CULOARE_VERDE, CULOARE_NEGRU, 2);
+  	gfx_draw_border(10, 100, 140, 80, 3, CULOARE_ROSU);
+  	gfx_draw_text(25, 130, "BPM 72", CULOARE_ALB, CULOARE_NEGRU, 2);
+  	gfx_draw_text(10, 200, "Risc: 35%", CULOARE_ALB, CULOARE_NEGRU, 2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
