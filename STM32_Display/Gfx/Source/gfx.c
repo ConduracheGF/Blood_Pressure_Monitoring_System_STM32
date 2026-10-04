@@ -83,3 +83,8 @@ uint16_t gfx_text_width(const char *text, uint8_t scale)
 {
 	return strlen(text) * FONT_CELL_WIDTH * scale;
 }
+
+uint16_t gfx_text_height(uint8_t scale)
+{
+	return FONT_HEIGHT * scale;
+}

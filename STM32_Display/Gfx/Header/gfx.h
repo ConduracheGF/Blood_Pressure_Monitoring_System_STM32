@@ -17,5 +17,6 @@ void gfx_draw_border(uint16_t x, uint16_t y, uint16_t width, uint16_t height, ui
 void gfx_draw_char(uint16_t x, uint16_t y, char c, uint16_t color, uint16_t bg_color, uint8_t scale);
 void gfx_draw_text(uint16_t x, uint16_t y, const char *text, uint16_t color, uint16_t bg_color, uint8_t scale);
 uint16_t gfx_text_width(const char *text, uint8_t scale);
+uint16_t gfx_text_height(uint8_t scale);
 
 #endif /* HEADER_GFX_H_ */

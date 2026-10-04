@@ -1,0 +1,4 @@
+../UI/Source/screens.c:23:6:screen_start_draw	16	static
+../UI/Source/screens.c:30:6:screen_simulation_draw	16	static
+../UI/Source/screens.c:37:6:screen_simulation_update	32	static
+../UI/Source/screens.c:44:6:screen_results_draw	40	static

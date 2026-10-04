@@ -27,5 +27,6 @@ Core/Startup \
 Drivers/STM32F4xx_HAL_Driver/Src \
 Gfx/Source \
 IO/Source \
+UI/Source \
 Utils/Source \
 

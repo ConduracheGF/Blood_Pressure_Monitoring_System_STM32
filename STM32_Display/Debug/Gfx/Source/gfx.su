@@ -3,3 +3,4 @@
 ../Gfx/Source/gfx.c:35:6:gfx_draw_char	40	static
 ../Gfx/Source/gfx.c:73:6:gfx_draw_text	40	static
 ../Gfx/Source/gfx.c:82:10:gfx_text_width	16	static
+../Gfx/Source/gfx.c:87:10:gfx_text_height	16	static

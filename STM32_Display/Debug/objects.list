@@ -26,6 +26,8 @@
 "./IO/Source/lcd_io.o"
 "./IO/Source/sys_io.o"
 "./IO/Source/touchscreen_io.o"
+"./UI/Source/screens.o"
+"./UI/Source/widgets.o"
 "./Utils/Source/cardSD.o"
 "./Utils/Source/lcd.o"
 "./Utils/Source/touchscreen.o"
