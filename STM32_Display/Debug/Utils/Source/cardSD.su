@@ -1,0 +1,7 @@
+../Utils/Source/cardSD.c:38:13:Deselect_Card	8	static
+../Utils/Source/cardSD.c:44:13:Wait_Ready	16	static
+../Utils/Source/cardSD.c:57:13:Select_Card	8	static
+../Utils/Source/cardSD.c:74:16:Send_Command	24	static
+../Utils/Source/cardSD.c:99:13:Read_Response_Tail	32	static
+../Utils/Source/cardSD.c:107:12:SD_Init	24	static
+../Utils/Source/cardSD.c:202:12:SD_Read_Block	24	static

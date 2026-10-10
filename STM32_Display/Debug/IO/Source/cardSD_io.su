@@ -1,0 +1,6 @@
+../IO/Source/cardSD_io.c:16:6:SD_IO_Init	8	static
+../IO/Source/cardSD_io.c:21:6:SD_IO_Select	8	static
+../IO/Source/cardSD_io.c:26:6:SD_IO_Deselect	8	static
+../IO/Source/cardSD_io.c:32:9:SD_IO_Transfer_Byte	32	static
+../IO/Source/cardSD_io.c:45:6:SD_IO_Receive_Bytes	24	static
+../IO/Source/cardSD_io.c:56:6:SD_IO_Set_Speed	16	static

@@ -21,11 +21,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 #include "IO/Header/lcd_io.h"
 #include "IO/Header/sys_io.h"
 #include "Utils/Header/lcd.h"
+#include "Utils/Header/cardSD.h"
 #include "Gfx/Header/gfx.h"
 #include "UI/Header/screens.h"
+#include "IO/Header/cardSD_io.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -98,24 +101,23 @@ int main(void)
   MX_SPI1_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-  	lcd_io_init();
-  	volatile uint16_t bus_errors = lcd_io_test_data_bus();
-
-  	uint32_t t_start = sys_io_millis();
-  	sys_io_delay_ms(100);
-  	volatile uint32_t elapsed_ms = sys_io_millis() - t_start;
+  static uint8_t sector[SD_BLOCK_SIZE];	// static, ca stiva implicita are doar 1 KB
+  	char text[32];
 
   	lcd_init();
-  	screen_start_draw();
-  	sys_io_delay_ms(2000);
+  	gfx_clear(CULOARE_NEGRU);
+  	gfx_draw_text(10, 10, "TEST SD", CULOARE_ALB, CULOARE_NEGRU, 3);
 
-  	screen_simulation_draw();
-  	for(uint8_t seconds = 5; seconds > 0; seconds--)
-  	{
-  		screen_simulation_update(seconds);
-  		sys_io_delay_ms(1000);
-  	}
-  	screen_results_draw(128, 84, 72, 35, true);
+  	SdStatus_t status = SD_Init();
+  	snprintf(text, sizeof(text), "INIT: %d", status);
+  	gfx_draw_text(10, 60, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
+
+  	status = SD_Read_Block(0, sector);
+  	snprintf(text, sizeof(text), "CITIRE: %d", status);
+  	gfx_draw_text(10, 90, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
+
+  	snprintf(text, sizeof(text), "SECTOR 0: %02X %02X", sector[510], sector[511]);
+  	gfx_draw_text(10, 120, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
   /* USER CODE END 2 */
 
   /* Infinite loop */
