@@ -26,13 +26,22 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/App/fatfs.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/integer.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/Target/ffconf.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/diskio.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/Target/user_diskio.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/lcd_io.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/sys_io.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardSD.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/gfx.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/cardSD_io.h
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/cardSD_io.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -61,6 +70,14 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/App/fatfs.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/integer.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/Target/ffconf.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/diskio.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Middlewares/Third_Party/FatFs/src/ff.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/FATFS/Target/user_diskio.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/lcd_io.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/sys_io.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h:
@@ -68,3 +85,4 @@ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardSD.h
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/gfx.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/cardSD_io.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h:

@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -29,6 +30,7 @@
 #include "Gfx/Header/gfx.h"
 #include "UI/Header/screens.h"
 #include "IO/Header/cardSD_io.h"
+#include "Utils/Header/cardFS.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -100,24 +102,27 @@ int main(void)
   MX_GPIO_Init();
   MX_SPI1_Init();
   MX_USART2_UART_Init();
+  MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  static uint8_t sector[SD_BLOCK_SIZE];	// static, ca stiva implicita are doar 1 KB
+  	char names[8][FS_MAX_NAME_LENGTH];
   	char text[32];
 
   	lcd_init();
   	gfx_clear(CULOARE_NEGRU);
-  	gfx_draw_text(10, 10, "TEST SD", CULOARE_ALB, CULOARE_NEGRU, 3);
+  	gfx_draw_text(10, 10, "TEST FATFS", CULOARE_ALB, CULOARE_NEGRU, 3);
 
-  	SdStatus_t status = SD_Init();
-  	snprintf(text, sizeof(text), "INIT: %d", status);
+  	FsStatus_t fs_status = FS_Mount();
+  	snprintf(text, sizeof(text), "MONTARE: %d  COD: %d", fs_status, FS_Get_Last_Error());
   	gfx_draw_text(10, 60, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
 
-  	status = SD_Read_Block(0, sector);
-  	snprintf(text, sizeof(text), "CITIRE: %d", status);
+  	uint8_t count = FS_List_Files(".BMP", names, 8);
+  	snprintf(text, sizeof(text), "FISIERE BMP: %d", count);
   	gfx_draw_text(10, 90, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
 
-  	snprintf(text, sizeof(text), "SECTOR 0: %02X %02X", sector[510], sector[511]);
-  	gfx_draw_text(10, 120, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
+  	for (uint8_t index = 0; index < count; index++)
+  	{
+  		gfx_draw_text(10, 120 + index * 24, names[index], CULOARE_ALB, CULOARE_NEGRU, 2);
+  	}
   /* USER CODE END 2 */
 
   /* Infinite loop */
