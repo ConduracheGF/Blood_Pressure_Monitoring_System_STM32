@@ -5,12 +5,15 @@
  *      Author: Condurache Gabriel
  */
 
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
+
 #include "ff.h"
 #include "Utils/Header/cardFS.h"
 
 static FATFS file_system;
+static FIL file;
 static uint8_t last_error = 0;
 
 /*
@@ -64,6 +67,49 @@ uint8_t FS_List_Files(const char *extension, char names[][FS_MAX_NAME_LENGTH], u
 
 	f_closedir(&_directory);
 	return _count;
+}
+
+// Se deschide fisierul din radacina cardului: blocul 0 de memorie
+FsStatus_t FS_Open(const char *name)
+{
+	char _path[FS_MAX_NAME_LENGTH + 4];
+	snprintf(_path, sizeof(_path), "0:/%s", name);
+
+	FRESULT _result = f_open(&file, _path, FA_READ);
+	if (_result != FR_OK) {
+		last_error = _result;
+		return FS_ERROR_OPEN;
+	}
+	return FS_NORMAL;
+}
+
+FsStatus_t FS_Read(void *buffer, uint16_t length, uint16_t *bytes_read)
+{
+	UINT _read_count = 0;
+	FRESULT _result = f_read(&file, buffer, length, &_read_count);
+	*bytes_read = _read_count;
+
+	if (_result != FR_OK) {
+		last_error = _result;
+		return FS_ERROR_READ;
+	}
+	return FS_NORMAL;
+}
+
+FsStatus_t FS_Seek(uint32_t offset)
+{
+	FRESULT _result = f_lseek(&file, offset);
+
+	if (_result != FR_OK) {
+		last_error = _result;
+		return FS_ERROR_READ;
+	}
+	return FS_NORMAL;
+}
+
+void FS_Close()
+{
+	f_close(&file);
 }
 
 uint8_t FS_Get_Last_Error()

@@ -1,3 +1,7 @@
-../Utils/Source/cardFS.c:20:12:FS_Mount	16	static
-../Utils/Source/cardFS.c:38:9:FS_List_Files	120	static
-../Utils/Source/cardFS.c:69:9:FS_Get_Last_Error	4	static
+../Utils/Source/cardFS.c:23:12:FS_Mount	16	static
+../Utils/Source/cardFS.c:41:9:FS_List_Files	120	static
+../Utils/Source/cardFS.c:73:12:FS_Open	40	static
+../Utils/Source/cardFS.c:86:12:FS_Read	32	static
+../Utils/Source/cardFS.c:99:12:FS_Seek	24	static
+../Utils/Source/cardFS.c:110:6:FS_Close	8	static
+../Utils/Source/cardFS.c:115:9:FS_Get_Last_Error	4	static

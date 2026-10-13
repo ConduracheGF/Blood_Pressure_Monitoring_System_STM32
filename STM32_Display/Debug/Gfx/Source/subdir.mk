@@ -5,14 +5,17 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Gfx/Source/bmp.c \
 ../Gfx/Source/font.c \
 ../Gfx/Source/gfx.c 
 
 OBJS += \
+./Gfx/Source/bmp.o \
 ./Gfx/Source/font.o \
 ./Gfx/Source/gfx.o 
 
 C_DEPS += \
+./Gfx/Source/bmp.d \
 ./Gfx/Source/font.d \
 ./Gfx/Source/gfx.d 
 
@@ -24,7 +27,7 @@ Gfx/Source/%.o Gfx/Source/%.su Gfx/Source/%.cyclo: ../Gfx/Source/%.c Gfx/Source/
 clean: clean-Gfx-2f-Source
 
 clean-Gfx-2f-Source:
-	-$(RM) ./Gfx/Source/font.cyclo ./Gfx/Source/font.d ./Gfx/Source/font.o ./Gfx/Source/font.su ./Gfx/Source/gfx.cyclo ./Gfx/Source/gfx.d ./Gfx/Source/gfx.o ./Gfx/Source/gfx.su
+	-$(RM) ./Gfx/Source/bmp.cyclo ./Gfx/Source/bmp.d ./Gfx/Source/bmp.o ./Gfx/Source/bmp.su ./Gfx/Source/font.cyclo ./Gfx/Source/font.d ./Gfx/Source/font.o ./Gfx/Source/font.su ./Gfx/Source/gfx.cyclo ./Gfx/Source/gfx.d ./Gfx/Source/gfx.o ./Gfx/Source/gfx.su
 
 .PHONY: clean-Gfx-2f-Source
 

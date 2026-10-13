@@ -31,6 +31,7 @@
 #include "UI/Header/screens.h"
 #include "IO/Header/cardSD_io.h"
 #include "Utils/Header/cardFS.h"
+#include "Gfx/Header/bmp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -104,25 +105,41 @@ int main(void)
   MX_USART2_UART_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  	char names[8][FS_MAX_NAME_LENGTH];
-  	char text[32];
+	char names[8][FS_MAX_NAME_LENGTH];
+	char text[32];
 
-  	lcd_init();
-  	gfx_clear(CULOARE_NEGRU);
-  	gfx_draw_text(10, 10, "TEST FATFS", CULOARE_ALB, CULOARE_NEGRU, 3);
+	lcd_init();
+	gfx_clear(CULOARE_NEGRU);
 
-  	FsStatus_t fs_status = FS_Mount();
-  	snprintf(text, sizeof(text), "MONTARE: %d  COD: %d", fs_status, FS_Get_Last_Error());
-  	gfx_draw_text(10, 60, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
+	BmpStatus_t bmp_status = BMP_ERROR_OPEN;
+	uint8_t count = 0;
 
-  	uint8_t count = FS_List_Files(".BMP", names, 8);
-  	snprintf(text, sizeof(text), "FISIERE BMP: %d", count);
-  	gfx_draw_text(10, 90, text, CULOARE_VERDE, CULOARE_NEGRU, 2);
+	FsStatus_t mount_status = FS_Mount();
+	if (mount_status == FS_NORMAL)
+	{
+		count = FS_List_Files(".BMP", names, 8);
+		if (count > 0)
+		{
+			bmp_status = BMP_Draw_File(names[0], 0, 0);
+		}
+	}
 
-  	for (uint8_t index = 0; index < count; index++)
-  	{
-  		gfx_draw_text(10, 120 + index * 24, names[index], CULOARE_ALB, CULOARE_NEGRU, 2);
-  	}
+	if (bmp_status != BMP_NORMAL)
+	{
+		snprintf(text, sizeof(text), "MONTARE: %d", mount_status);
+		gfx_draw_text(10, 10, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
+
+		snprintf(text, sizeof(text), "FISIERE: %d", count);
+		gfx_draw_text(10, 40, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
+
+		snprintf(text, sizeof(text), "BMP: %d  COD: %d", bmp_status, FS_Get_Last_Error());
+		gfx_draw_text(10, 70, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
+
+		if (count > 0)
+		{
+			gfx_draw_text(10, 100, names[0], CULOARE_ALB, CULOARE_NEGRU, 2);
+		}
+	}
   /* USER CODE END 2 */
 
   /* Infinite loop */

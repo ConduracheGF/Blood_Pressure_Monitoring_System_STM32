@@ -41,7 +41,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/gfx.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/cardSD_io.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/bmp.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -86,3 +87,4 @@ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/gfx.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/cardSD_io.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Gfx/Header/bmp.h:
