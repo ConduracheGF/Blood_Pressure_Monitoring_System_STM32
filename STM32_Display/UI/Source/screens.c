@@ -10,6 +10,7 @@
 #include "UI/Header/widgets.h"
 #include "UI/Header/layout.h"
 #include "Gfx/Header/gfx.h"
+#include "Utils/Header/touchscreen.h"
 
 static const Rect_t screen_area = LAYOUT_SCREEN;
 static const Rect_t sys_box = LAYOUT_RESULTS_SYS_BOX;
@@ -41,9 +42,22 @@ void screen_simulation_update(uint8_t second_left)
 	widget_draw_text_centered(&screen_area, LAYOUT_SIMULATION_COUNTER_Y, text, UI_COLOR_VALUE, UI_COLOR_BACKGROUND, 4);
 }
 
-void screen_results_draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t risk_percent, bool hypertension)
+void screen_results_draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t risk_percent, ScreenRisk_t risk)
 {
 	char text[8];
+	const char *risk_title = "NORMAL";
+	uint16_t risk_color = UI_COLOR_VALUE;
+
+	if (risk == SCREEN_RISK_HYPER)
+	{
+		risk_title = "RISC HIPER";
+		risk_color = UI_COLOR_RISK;
+	}
+	else if (risk == SCREEN_RISK_HYPO)
+	{
+		risk_title = "RISC HIPO";
+		risk_color = UI_COLOR_RISK;
+	}
 
 	gfx_clear(UI_COLOR_BACKGROUND);
 	widget_draw_text_centered(&screen_area, LAYOUT_RESULTS_TITLE_Y, "REZULTATE", UI_COLOR_TEXT, UI_COLOR_BACKGROUND, 3);
@@ -59,7 +73,23 @@ void screen_results_draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t risk_
 
 
 	snprintf(text, sizeof(text), "%u%%", risk_percent);
-	widget_draw_value_box(&risk_box, hypertension ? "RISC HIPER" : "RISC HIPO", text, UI_COLOR_RISK);
+	widget_draw_value_box(&risk_box, risk_title, text, risk_color);
 
 	widget_draw_button(&restart_button);
+}
+
+static bool Button_Pressed(const Button_t *button)
+{
+	TouchPoint_t _point;
+	return Touch_Get_Point(&_point) && widget_contains(&button->area, _point.x, _point.y);
+}
+
+bool screen_start_button_pressed()
+{
+	return Button_Pressed(&start_button);
+}
+
+bool screen_restart_button_pressed()
+{
+	return Button_Pressed(&restart_button);
 }

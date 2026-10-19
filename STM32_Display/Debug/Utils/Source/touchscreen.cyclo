@@ -1,0 +1,3 @@
+../Utils/Source/touchscreen.c:11:16:Map	1
+../Utils/Source/touchscreen.c:16:16:Clamp	3
+../Utils/Source/touchscreen.c:29:6:Touch_Get_Point	3

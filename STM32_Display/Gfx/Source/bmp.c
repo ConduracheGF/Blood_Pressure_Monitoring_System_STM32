@@ -23,9 +23,9 @@
 
 #define BMP_HEADER_SIZE 54
 #define BMP_SIGNATURE 0x4D42
-#define BMP_BYTES_PER_PIXEL 3
+#define BMP_MAX_BYTES_PER_PIXEL 4
 
-static uint8_t row_buffer[LCD_WIDTH * BMP_BYTES_PER_PIXEL]; // Randul din fisier contine B,G,R
+static uint8_t row_buffer[LCD_WIDTH * BMP_MAX_BYTES_PER_PIXEL]; // Randul din fisier contine B,G,R
 static uint16_t pixel_buffer[LCD_WIDTH];
 
 static uint16_t Read16(const uint8_t *data)
@@ -64,7 +64,10 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 		_height = -_height;
 	}
 
-	if (Read16(&_header[0]) != BMP_SIGNATURE || _biti_per_pixel != 24 || _compression != 0 || _width <= 0 || _height == 0) {
+	bool _supported_bytes = (_biti_per_pixel == 24 && _compression == 0) ||
+							(_biti_per_pixel == 32 && (_compression == 0 || _compression == 3));
+
+	if (Read16(&_header[0]) != BMP_SIGNATURE || !_supported_bytes ||  _width <= 0 || _height == 0) {
 		FS_Close();
 		return BMP_ERROR_FORMAT;
 	}
@@ -74,7 +77,8 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 		return BMP_ERROR_SIZE;
 	}
 
-	uint32_t _row_size = ((_width * BMP_BYTES_PER_PIXEL) + 3) & ~3u;
+	int32_t _bytes_per_pixel = _biti_per_pixel / 8;
+	uint32_t _row_size = (uint32_t)((_width * _bytes_per_pixel + 3) & ~3);
 
 	if (FS_Seek(_data_offset) != FS_NORMAL) {
 		FS_Close();
@@ -82,16 +86,16 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 	}
 
 	for (int32_t row = 0; row < _height; row++){
-		if (FS_Read(row_buffer, _row_size, &_bytes_read) != FS_NORMAL || _bytes_read < (_width * BMP_BYTES_PER_PIXEL)) {
+		if (FS_Read(row_buffer, _row_size, &_bytes_read) != FS_NORMAL || _bytes_read < (_width * _bytes_per_pixel)) {
 			FS_Close();
 			return BMP_ERROR_READ;
 		}
 
 		// Conversie RGB565
 		for (int32_t column = 0; column < _width; column++) {
-			uint8_t _blue = row_buffer[column * BMP_BYTES_PER_PIXEL];
-			uint8_t _green = row_buffer[column * BMP_BYTES_PER_PIXEL + 1];
-			uint8_t _red = row_buffer[column * BMP_BYTES_PER_PIXEL + 2];
+			uint8_t _blue = row_buffer[column * _bytes_per_pixel];
+			uint8_t _green = row_buffer[column * _bytes_per_pixel + 1];
+			uint8_t _red = row_buffer[column * _bytes_per_pixel + 2];
 			pixel_buffer[column] = ((_red & 0x0F8) << 8) | ((_green & 0xFC) << 3) | (_blue >> 3);
 		}
 

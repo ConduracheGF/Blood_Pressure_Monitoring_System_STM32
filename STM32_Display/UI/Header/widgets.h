@@ -9,6 +9,7 @@
 #define HEADER_WIDGETS_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
 typedef struct {
 	uint16_t x;
@@ -26,5 +27,6 @@ typedef struct {
 void widget_draw_text_centered(const Rect_t *area, uint16_t y, const char *text, uint16_t color, uint16_t bg_color, uint8_t scale);
 void widget_draw_button(const Button_t *button);
 void widget_draw_value_box(const Rect_t *area, const char *title, const char *value, uint16_t color);
+bool widget_contains(const Rect_t *area, uint16_t x, uint16_t y);
 
 #endif /* HEADER_WIDGETS_H_ */

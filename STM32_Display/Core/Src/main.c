@@ -31,7 +31,10 @@
 #include "UI/Header/screens.h"
 #include "IO/Header/cardSD_io.h"
 #include "Utils/Header/cardFS.h"
+#include "IO/Header/touchscreen_io.h"
 #include "Gfx/Header/bmp.h"
+#include "Utils/Header/touchscreen.h"
+#include "App/Header/app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -41,7 +44,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define TOUCH_THRESHOLD 100
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -50,6 +53,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc1;
+
 SPI_HandleTypeDef hspi1;
 
 UART_HandleTypeDef huart2;
@@ -63,8 +68,10 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_ADC1_Init(void);
 /* USER CODE BEGIN PFP */
-
+static void Wait_Touch(uint16_t *x, uint16_t *y);
+static void Wait_Release();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -104,42 +111,11 @@ int main(void)
   MX_SPI1_Init();
   MX_USART2_UART_Init();
   MX_FATFS_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
-	char names[8][FS_MAX_NAME_LENGTH];
-	char text[32];
 
-	lcd_init();
-	gfx_clear(CULOARE_NEGRU);
+  APP_Init();
 
-	BmpStatus_t bmp_status = BMP_ERROR_OPEN;
-	uint8_t count = 0;
-
-	FsStatus_t mount_status = FS_Mount();
-	if (mount_status == FS_NORMAL)
-	{
-		count = FS_List_Files(".BMP", names, 8);
-		if (count > 0)
-		{
-			bmp_status = BMP_Draw_File(names[0], 0, 0);
-		}
-	}
-
-	if (bmp_status != BMP_NORMAL)
-	{
-		snprintf(text, sizeof(text), "MONTARE: %d", mount_status);
-		gfx_draw_text(10, 10, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
-
-		snprintf(text, sizeof(text), "FISIERE: %d", count);
-		gfx_draw_text(10, 40, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
-
-		snprintf(text, sizeof(text), "BMP: %d  COD: %d", bmp_status, FS_Get_Last_Error());
-		gfx_draw_text(10, 70, text, CULOARE_ROSU, CULOARE_NEGRU, 2);
-
-		if (count > 0)
-		{
-			gfx_draw_text(10, 100, names[0], CULOARE_ALB, CULOARE_NEGRU, 2);
-		}
-	}
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -149,6 +125,8 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  APP_Run();
   }
   /* USER CODE END 3 */
 }
@@ -196,6 +174,58 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief ADC1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC1_Init(void)
+{
+
+  /* USER CODE BEGIN ADC1_Init 0 */
+
+  /* USER CODE END ADC1_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC1_Init 1 */
+
+  /* USER CODE END ADC1_Init 1 */
+
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+  */
+  hadc1.Instance = ADC1;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc1.Init.ScanConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.DiscontinuousConvMode = DISABLE;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_TEMPSENSOR;
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC1_Init 2 */
+
+  /* USER CODE END ADC1_Init 2 */
+
 }
 
 /**
@@ -336,7 +366,46 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+// Asteapta o apasare si intoarce media citirilor X si Y
+static void Wait_Touch(uint16_t *x, uint16_t *y)
+{
+	uint32_t _sum_x = 0;
+	uint32_t _sum_y = 0;
+	uint8_t _samples = 0;
 
+	while (_samples == 0)
+	{
+		while (Touch_IO_Read_Pressure() < TOUCH_THRESHOLD)
+		{
+			sys_io_delay_ms(10);
+		}
+		sys_io_delay_ms(100);		// apasarea se stabilizeaza
+
+		for (uint8_t index = 0; index < 8; index++)
+		{
+			if (Touch_IO_Read_Pressure() >= TOUCH_THRESHOLD)
+			{
+				_sum_x += Touch_IO_Read_X();
+				_sum_y += Touch_IO_Read_Y();
+				_samples++;
+			}
+			sys_io_delay_ms(5);
+		}
+	}
+
+	*x = _sum_x / _samples;
+	*y = _sum_y / _samples;
+}
+
+// Asteapta sa se ridice degetul
+static void Wait_Release()
+{
+	while (Touch_IO_Read_Pressure() >= TOUCH_THRESHOLD)
+	{
+		sys_io_delay_ms(10);
+	}
+	sys_io_delay_ms(200);		// anti-tresarire
+}
 /* USER CODE END 4 */
 
 /**

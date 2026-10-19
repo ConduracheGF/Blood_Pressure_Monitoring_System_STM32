@@ -1,4 +1,7 @@
-../UI/Source/screens.c:23:6:screen_start_draw	1
-../UI/Source/screens.c:30:6:screen_simulation_draw	1
-../UI/Source/screens.c:37:6:screen_simulation_update	1
-../UI/Source/screens.c:44:6:screen_results_draw	2
+../UI/Source/screens.c:24:6:screen_start_draw	1
+../UI/Source/screens.c:31:6:screen_simulation_draw	1
+../UI/Source/screens.c:38:6:screen_simulation_update	1
+../UI/Source/screens.c:45:6:screen_results_draw	3
+../UI/Source/screens.c:81:13:Button_Pressed	3
+../UI/Source/screens.c:87:6:screen_start_button_pressed	1
+../UI/Source/screens.c:92:6:screen_restart_button_pressed	1

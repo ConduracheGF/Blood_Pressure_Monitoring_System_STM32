@@ -45,3 +45,8 @@ void widget_draw_value_box(const Rect_t *area, const char *title, const char *va
 	uint16_t valueY = area->y + (area->height - gfx_text_height(VALUE_BOX_VALUE_SCALE)) / 2 + 12;
 	widget_draw_text_centered(area, valueY, value, color, UI_COLOR_BACKGROUND, VALUE_BOX_VALUE_SCALE);
 }
+
+bool widget_contains(const Rect_t *area, uint16_t x, uint16_t y)
+{
+	return (x >= area->x && x < area->x + area->width && y >= area->y && y < area->y + area->height);
+}

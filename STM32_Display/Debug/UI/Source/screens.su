@@ -1,4 +1,7 @@
-../UI/Source/screens.c:23:6:screen_start_draw	16	static
-../UI/Source/screens.c:30:6:screen_simulation_draw	16	static
-../UI/Source/screens.c:37:6:screen_simulation_update	32	static
-../UI/Source/screens.c:44:6:screen_results_draw	40	static
+../UI/Source/screens.c:24:6:screen_start_draw	16	static
+../UI/Source/screens.c:31:6:screen_simulation_draw	16	static
+../UI/Source/screens.c:38:6:screen_simulation_update	32	static
+../UI/Source/screens.c:45:6:screen_results_draw	48	static
+../UI/Source/screens.c:81:13:Button_Pressed	24	static
+../UI/Source/screens.c:87:6:screen_start_button_pressed	8	static
+../UI/Source/screens.c:92:6:screen_restart_button_pressed	8	static
