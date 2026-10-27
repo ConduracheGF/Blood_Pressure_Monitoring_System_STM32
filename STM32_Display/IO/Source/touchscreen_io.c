@@ -94,7 +94,7 @@ static uint16_t Read_Adc(uint32_t channel)
 			_sum += _value;
 		}
 	}
-	return _sum/TOUCH_ADC_SAMPLES;
+	return (_sum / TOUCH_ADC_SAMPLES);
 }
 
 /*

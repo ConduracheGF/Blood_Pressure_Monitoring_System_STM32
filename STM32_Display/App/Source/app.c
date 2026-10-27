@@ -1,6 +1,6 @@
 /*
  * app.c
- *
+ *	LOGO -> PROJECT -> START -> MEASURE -> RESULTS -> MENU
  *  Created on: 19 Oct 2026
  *      Author: Condurache Gabriel
  */
@@ -8,56 +8,44 @@
 #include "App/Header/app.h"
 #include "App/Header/vitals.h"
 #include "UI/Header/screens.h"
-#include "Gfx/Header/bmp.h"
-#include "Gfx/Header/gfx.h"
 #include "Utils/Header/cardFS.h"
 #include "Utils/Header/lcd.h"
 #include "IO/Header/sys_io.h"
 
 static AppState_t state;
-static char photo_names[APP_MAX_PHOTOS][FS_MAX_NAME_LENGTH];
-static uint8_t photo_count = 0;
-static uint8_t photo_index = 0;
-static uint8_t photo_shown_at = 0;
-static uint8_t simulation_started_at = 0;
-static uint8_t seconds_shown = 0;
+static uint32_t shownAt = 0;
+static uint32_t measureStartedAt = 0;
+static uint8_t lastProgress = 0;
 static Vitals_t vitals;
+
+static void Enter_Logo()
+{
+	Screen_Logo_Draw();
+	shownAt = SYS_IO_Millis();
+	state = APP_LOGO;
+}
+
+static void Enter_Project()
+{
+	Screen_Project_Draw();
+	shownAt = SYS_IO_Millis();
+	state = APP_PROJECT;
+}
 
 static void Enter_Start()
 {
-	screen_start_draw();
+	Screen_Start_Draw();
 	state = APP_START;
 }
 
-static void Show_Photo()
+static void Enter_Menu()
 {
-	gfx_clear(CULOARE_NEGRU);
-	BmpStatus_t _status = BMP_Draw_File(photo_names[photo_index], 0, 0);
-	photo_shown_at = sys_io_millis();
-
-	if (_status != BMP_NORMAL)
-	{
-		photo_shown_at -= APP_PHOTO_TIME_MS;
-	}
-}
-
-static void Enter_Photos()
-{
-	photo_index = 0;
-	if (photo_count == 0)
-	{
-		Enter_Start();
-		return;
-	}
-
-	Show_Photo();
-	state = APP_PHOTOS;
+	Screen_Menu_Draw();
+	state = APP_MENU;
 }
 
 static void Enter_Results()
 {
-	Vitals_Generate(&vitals);
-
 	ScreenRisk_t _risk = SCREEN_RISK_NORMAL;
 	if (vitals.tensiune.type == HYPER)
 	{
@@ -68,78 +56,98 @@ static void Enter_Results()
 		_risk = SCREEN_RISK_HYPO;
 	}
 
-	screen_results_draw(vitals.sys, vitals.dia, vitals.bpm, vitals.tensiune.risk_percent, _risk);
+	Screen_Results_Draw(vitals.sys, vitals.dia, vitals.bpm, vitals.tensiune.riskPercent, _risk);
 	state = APP_RESULTS;
 }
 
-static void Enter_Simulation()
+static void Enter_Measure()
 {
-	Vitals_Seed(sys_io_millis());
-	screen_simulation_draw();
-	simulation_started_at = sys_io_millis();
-	seconds_shown = 0;
-	state = APP_SIMULATION;
+	Screen_Measure_Draw();
+	Vitals_Seed(SYS_IO_Millis());
+	Vitals_Generate(&vitals);
+
+	Screen_Measure_Begin();
+	measureStartedAt = SYS_IO_Millis();
+	lastProgress = 255;
+	state = APP_MEASURE;
 }
 
-static void Update_Simulation()
+static uint16_t Cuff_Pressure(uint32_t elapsedMS)
 {
-	uint32_t _elapsed_seconds = (sys_io_millis() - simulation_started_at) / 1000;
-	if (_elapsed_seconds >= APP_SIMULATION_SECONDS)
+	uint32_t _peak = vitals.sys + APP_CUFF_OVERSHOOT;
+	uint32_t _inflateMS = APP_MEASURE_TIME_MS + APP_INFLATE_PERCENT / 100;
+
+	if (elapsedMS < _inflateMS)
+	{
+		return _peak  * elapsedMS / _inflateMS;
+	}
+	return _peak * (APP_MEASURE_TIME_MS - elapsedMS);
+}
+
+static void Update_Measure()
+{
+	uint32_t _elapsed = SYS_IO_Millis() - measureStartedAt;
+
+	if (_elapsed >= APP_MEASURE_TIME_MS)
 	{
 		Enter_Results();
 		return;
 	}
 
-	uint8_t _seconds_left = APP_SIMULATION_SECONDS - _elapsed_seconds;
-	if (_seconds_left != seconds_shown)
+	uint8_t _progress = _elapsed * 100 / APP_MEASURE_TIME_MS;
+	if (_progress != lastProgress)
 	{
-		screen_simulation_update(_seconds_left);
-		seconds_shown = _seconds_left;
+		Screen_Measure_Update(_progress, Cuff_Pressure(_elapsed));
+		lastProgress = _progress;
 	}
 }
 
 void APP_Init()
 {
-	lcd_init();
-	if (FS_Mount() == FS_NORMAL)
-	{
-		photo_count = FS_List_Files(".BMP", photo_names, APP_MAX_PHOTOS);
-	}
-
-	Enter_Photos();
+	LCD_Init();
+	FS_Mount();
+	Enter_Logo();
 }
 
 void APP_Run()
 {
 	switch (state)
 	{
-		case APP_PHOTOS:
-			if (sys_io_millis() - photo_shown_at >= APP_PHOTO_TIME_MS)
+		case APP_LOGO:
+			if (SYS_IO_Millis() - shownAt >= APP_LOGO_TIME_MS)
 			{
-				photo_index++;
-				if (photo_index >= photo_count)
-				{
-					Enter_Start();
-				}
-				else
-				{
-					Show_Photo();
-				}
+					Enter_Project();
+			}
+			break;
+		case APP_PROJECT:
+			if (SYS_IO_Millis() - shownAt >= APP_PROJECT_TIME_MS)
+			{
+				Enter_Start();
 			}
 			break;
 		case APP_START:
-			if (screen_start_button_pressed())
+			if (Screen_Start_Pressed())
 			{
-				Enter_Simulation();
+				Enter_Measure();
 			}
 			break;
-		case APP_SIMULATION:
-			Update_Simulation();
+		case APP_MEASURE:
+			Update_Measure();
 			break;
 		case APP_RESULTS:
-			if (screen_restart_button_pressed())
+			if (Screen_Back_Pressed())
 			{
-				Enter_Photos();
+				Enter_Menu();
+			}
+			break;
+		case APP_MENU:
+			if (Screen_Restart_Pressed())
+			{
+				Enter_Measure();
+			}
+			else if (Screen_View_Pressed())
+			{
+				Enter_Results();
 			}
 			break;
 	}

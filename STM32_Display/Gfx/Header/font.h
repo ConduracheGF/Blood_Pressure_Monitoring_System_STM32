@@ -16,8 +16,9 @@
 #define FONT_CELL_HEIGHT (FONT_HEIGHT + 1)
 
 #define FONT_FIRST_CHAR ' '
-#define FONT_LAST_CHAR 'Z'
+#define FONT_LAST_CHAR 'h'
 
-extern const uint8_t font_5x7[FONT_LAST_CHAR - FONT_FIRST_CHAR + 1][FONT_WIDTH];
+// Font de dimensiune 5 x 7
+extern const uint8_t font[FONT_LAST_CHAR - FONT_FIRST_CHAR + 1][FONT_WIDTH];
 
 #endif /* HEADER_FONT_H_ */

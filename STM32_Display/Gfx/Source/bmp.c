@@ -25,8 +25,8 @@
 #define BMP_SIGNATURE 0x4D42
 #define BMP_MAX_BYTES_PER_PIXEL 4
 
-static uint8_t row_buffer[LCD_WIDTH * BMP_MAX_BYTES_PER_PIXEL]; // Randul din fisier contine B,G,R
-static uint16_t pixel_buffer[LCD_WIDTH];
+static uint8_t rowBuffer[LCD_WIDTH * BMP_MAX_BYTES_PER_PIXEL]; // Randul din fisier contine B,G,R
+static uint16_t pixelBuffer[LCD_WIDTH];
 
 static uint16_t Read16(const uint8_t *data)
 {
@@ -41,33 +41,33 @@ static uint32_t Read32(const uint8_t *data)
 BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 {
 	uint8_t _header[BMP_HEADER_SIZE];
-	uint16_t _bytes_read;
+	uint16_t _bytesRead;
 
 	if (FS_Open(name) != FS_NORMAL){
 		return BMP_ERROR_OPEN;
 	}
 
-	if (FS_Read(_header, BMP_HEADER_SIZE, &_bytes_read) != FS_NORMAL || _bytes_read != BMP_HEADER_SIZE) {
+	if (FS_Read(_header, BMP_HEADER_SIZE, &_bytesRead) != FS_NORMAL || _bytesRead != BMP_HEADER_SIZE) {
 		FS_Close();
 		return BMP_ERROR_READ;
 	}
 
-	uint32_t _data_offset = Read32(&_header[10]);
+	uint32_t _dataOffset = Read32(&_header[10]);
 	int32_t _width = (int32_t) Read32(&_header[18]);
 	int32_t _height = (int32_t) Read32(&_header[22]);
-	uint16_t _biti_per_pixel = Read16(&_header[28]);
+	uint16_t _bitiPerPixel = Read16(&_header[28]);
 	uint32_t _compression = Read32(&_header[30]);
 
-	bool _bottom_up = (_height > 0);
+	bool _bottomUp = (_height > 0);
 
 	if (_height < 0) {
 		_height = -_height;
 	}
 
-	bool _supported_bytes = (_biti_per_pixel == 24 && _compression == 0) ||
-							(_biti_per_pixel == 32 && (_compression == 0 || _compression == 3));
+	bool _supportedBytes = (_bitiPerPixel == 24 && _compression == 0) ||
+							(_bitiPerPixel == 32 && (_compression == 0 || _compression == 3));
 
-	if (Read16(&_header[0]) != BMP_SIGNATURE || !_supported_bytes ||  _width <= 0 || _height == 0) {
+	if (Read16(&_header[0]) != BMP_SIGNATURE || !_supportedBytes ||  _width <= 0 || _height == 0) {
 		FS_Close();
 		return BMP_ERROR_FORMAT;
 	}
@@ -77,31 +77,31 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 		return BMP_ERROR_SIZE;
 	}
 
-	int32_t _bytes_per_pixel = _biti_per_pixel / 8;
-	uint32_t _row_size = (uint32_t)((_width * _bytes_per_pixel + 3) & ~3);
+	int32_t _bytesPerPixel = _bitiPerPixel / 8;
+	uint32_t _rowSize = (uint32_t)((_width * _bytesPerPixel + 3) & ~3);
 
-	if (FS_Seek(_data_offset) != FS_NORMAL) {
+	if (FS_Seek(_dataOffset) != FS_NORMAL) {
 		FS_Close();
 		return BMP_ERROR_READ;
 	}
 
 	for (int32_t row = 0; row < _height; row++){
-		if (FS_Read(row_buffer, _row_size, &_bytes_read) != FS_NORMAL || _bytes_read < (_width * _bytes_per_pixel)) {
+		if (FS_Read(rowBuffer, _rowSize, &_bytesRead) != FS_NORMAL || _bytesRead < (_width * _bytesPerPixel)) {
 			FS_Close();
 			return BMP_ERROR_READ;
 		}
 
 		// Conversie RGB565
 		for (int32_t column = 0; column < _width; column++) {
-			uint8_t _blue = row_buffer[column * _bytes_per_pixel];
-			uint8_t _green = row_buffer[column * _bytes_per_pixel + 1];
-			uint8_t _red = row_buffer[column * _bytes_per_pixel + 2];
-			pixel_buffer[column] = ((_red & 0x0F8) << 8) | ((_green & 0xFC) << 3) | (_blue >> 3);
+			uint8_t _blue = rowBuffer[column * _bytesPerPixel];
+			uint8_t _green = rowBuffer[column * _bytesPerPixel + 1];
+			uint8_t _red = rowBuffer[column * _bytesPerPixel + 2];
+			pixelBuffer[column] = ((_red & 0x0F8) << 8) | ((_green & 0xFC) << 3) | (_blue >> 3);
 		}
 
-		uint16_t _screen_row = _bottom_up ? (y + _height - 1 - row) : (y + row);
-		lcd_set_window(x, _screen_row, x + _width - 1, _screen_row);
-		lcd_write_pixels(pixel_buffer, _width);
+		uint16_t _screenRow = _bottomUp ? (y + _height - 1 - row) : (y + row);
+		LCD_Set_Window(x, _screenRow, x + _width - 1, _screenRow);
+		LCD_Write_Pixels(pixelBuffer, _width);
 	}
 
 	FS_Close();

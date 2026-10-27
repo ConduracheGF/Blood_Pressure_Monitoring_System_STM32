@@ -44,7 +44,7 @@ typedef enum {
 typedef struct {
 	bool risk;
 	RiskType_t type;
-	uint16_t risk_percent;
+	uint16_t riskPercent;
 } TensiuneType_t;
 
 typedef struct {

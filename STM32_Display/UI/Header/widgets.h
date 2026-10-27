@@ -24,9 +24,9 @@ typedef struct {
 	uint16_t color;
 } Button_t;
 
-void widget_draw_text_centered(const Rect_t *area, uint16_t y, const char *text, uint16_t color, uint16_t bg_color, uint8_t scale);
-void widget_draw_button(const Button_t *button);
-void widget_draw_value_box(const Rect_t *area, const char *title, const char *value, uint16_t color);
-bool widget_contains(const Rect_t *area, uint16_t x, uint16_t y);
+void Widget_Draw_Text_Centered(const Rect_t *area, uint16_t y, const char *text, uint16_t color, uint16_t bgColor, uint8_t scale);
+void Widget_Draw_Button(const Button_t *button);
+void Widget_Draw_Value_Box(const Rect_t *area, const char *title, const char *value, uint16_t color);
+bool Widget_Contains(const Rect_t *area, uint16_t x, uint16_t y);
 
 #endif /* HEADER_WIDGETS_H_ */

@@ -29,7 +29,7 @@
 #define SD_READ_TOKEN_TIMEOUT_MS 200
 #define SD_READY_TIMEOUT_MS 500
 
-static bool card_ready = false;
+static bool cardReady = false;
 
 /*
  * Cardul trebuie sa elibereze MISO
@@ -43,8 +43,8 @@ static void Deselect_Card()
 
 static bool Wait_Ready()
 {
-	uint32_t start = sys_io_millis();
-	while ((sys_io_millis() - start) < SD_READY_TIMEOUT_MS)
+	uint32_t _start = SYS_IO_Millis();
+	while ((SYS_IO_Millis() - _start) < SD_READY_TIMEOUT_MS)
 	{
 		if (SD_IO_Transfer_Byte(0xFF) == 0xFF)
 		{
@@ -86,21 +86,21 @@ static uint8_t Send_Command(uint8_t cmd, uint32_t arg, uint8_t crc)
 	SD_IO_Transfer_Byte(arg);
 	SD_IO_Transfer_Byte(crc);
 
-	uint8_t response = SD_R1_NO_RESPONSE;
-	for (uint8_t count = 0; count < 10 && response == SD_R1_NO_RESPONSE; count++)
+	uint8_t _response = SD_R1_NO_RESPONSE;
+	for (uint8_t _count = 0; _count < 10 && _response == SD_R1_NO_RESPONSE; _count++)
 	{
-		response = SD_IO_Transfer_Byte(0xFF);
+		_response = SD_IO_Transfer_Byte(0xFF);
 	}
 
-	return response;
+	return _response;
 }
 
 // Raspunsurile R3/R7 au 4 octeti dupa R1
 static void Read_Response_Tail(uint8_t *tail)
 {
-	for (uint8_t index = 0; index < 4; index++)
+	for (uint8_t _index = 0; _index < 4; _index++)
 	{
-		tail[index] = SD_IO_Transfer_Byte(0xFF);
+		tail[_index] = SD_IO_Transfer_Byte(0xFF);
 	}
 }
 
@@ -108,7 +108,7 @@ SdStatus_t SD_Init()
 {
 	uint8_t _r1;
 	uint8_t _tail[4];
-	card_ready = false;
+	cardReady = false;
 	SD_IO_Init();
 	SD_IO_Set_Speed(SD_IO_SPEED_INIT);
 
@@ -116,7 +116,7 @@ SdStatus_t SD_Init()
 	 * CS = HIGH pentru 74 de cicluri
 	 * cardul trebuie sa intre in modul de SPI
 	 */
-	for (uint8_t count = 0; count < 10; count++)
+	for (uint8_t _count = 0; _count < 10; _count++)
 	{
 		SD_IO_Transfer_Byte(0xFF);
 	}
@@ -126,7 +126,7 @@ SdStatus_t SD_Init()
 	 * Cardul ramane in IDLE
 	 */
 	_r1 = SD_R1_NO_RESPONSE;
-	for (uint8_t attempt = 0; attempt < 5 && _r1 != SD_R1_IDLE; attempt++)
+	for (uint8_t _attempt = 0; _attempt < 5 && _r1 != SD_R1_IDLE; _attempt++)
 	{
 		_r1 = Send_Command(SD_CMD_GO_IDLE_STATE, 0, 0x95);
 	}
@@ -158,15 +158,15 @@ SdStatus_t SD_Init()
 	/*
 	 * Comanda de initializare pentru SDHC
 	 */
-	bool _within_time;
-	uint32_t _start = sys_io_millis();
+	bool _withinTime;
+	uint32_t _start = SYS_IO_Millis();
 
 	do
 	{
 		Send_Command(SD_CMD_APP_CMD, 0, 0x01);
 		_r1 = Send_Command(SD_ACMD_SD_SEND_OP_COND, 0x40000000, 0x01);
-		_within_time = ((sys_io_millis() - _start) < SD_INIT_TIMEOUT_MS);
-	} while (_r1 != SD_R1_READY && _within_time);
+		_withinTime = ((SYS_IO_Millis() - _start) < SD_INIT_TIMEOUT_MS);
+	} while (_r1 != SD_R1_READY && _withinTime);
 
 	if (_r1 != SD_R1_READY)
 	{
@@ -194,14 +194,14 @@ SdStatus_t SD_Init()
 
 	Deselect_Card();
 	SD_IO_Set_Speed(SD_IO_SPEED_FAST);
-	card_ready = true;
+	cardReady = true;
 	return SD_NORMAL;
 }
 
 // Citire de blocuri pe 512 octeti
 SdStatus_t SD_Read_Block(uint32_t block, uint8_t *buffer)
 {
-	if (!card_ready)
+	if (!cardReady)
 	{
 		return SD_ERROR_NO_CARD;
 	}
@@ -213,9 +213,9 @@ SdStatus_t SD_Read_Block(uint32_t block, uint8_t *buffer)
 	}
 
 	uint8_t _token = 0xFF;
-	uint32_t _start = sys_io_millis();
+	uint32_t _start = SYS_IO_Millis();
 
-	while (_token == 0xFF && (sys_io_millis() - _start) < SD_READ_TOKEN_TIMEOUT_MS)
+	while (_token == 0xFF && (SYS_IO_Millis() - _start) < SD_READ_TOKEN_TIMEOUT_MS)
 	{
 		_token = SD_IO_Transfer_Byte(0xFF);
 	}

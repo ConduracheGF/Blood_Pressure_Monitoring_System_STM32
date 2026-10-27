@@ -20,9 +20,9 @@ typedef enum {
 } FsStatus_t;
 
 FsStatus_t FS_Mount();
-uint8_t FS_List_Files(const char *extension, char names[][FS_MAX_NAME_LENGTH], uint8_t max_files);
+uint8_t FS_List_Files(const char *extension, char names[][FS_MAX_NAME_LENGTH], uint8_t maxFiles);
 FsStatus_t FS_Open(const char *name);
-FsStatus_t FS_Read(void *buffer, uint16_t length, uint16_t *bytes_read);
+FsStatus_t FS_Read(void *buffer, uint16_t length, uint16_t *bytesRead);
 FsStatus_t FS_Seek(uint32_t offset);
 void FS_Close();
 uint8_t FS_Get_Last_Error(); // Se obtine codul FRESULT din FatFS cu ultima eroare

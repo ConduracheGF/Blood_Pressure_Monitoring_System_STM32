@@ -17,12 +17,22 @@ typedef enum {
 	SCREEN_RISK_HYPO
 } ScreenRisk_t;
 
-void screen_start_draw();
-void screen_simulation_draw();
-void screen_simulation_update(uint8_t second_lef);
-void screen_results_draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t risk_percent, ScreenRisk_t risk);
-bool screen_start_button_pressed();
-bool screen_restart_button_pressed();
+// Ecrane din poze
+void Screen_Logo_Draw();
+void Screen_Project_Draw();
+void Screen_Start_Draw();
+void Screen_Menu_Draw();
+void Screen_Measure_Draw();
+void Screen_Results_Draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t riskPercent, ScreenRisk_t risk);
 
+// Masurare cu bara colorata si presiunea din manseta
+void Screen_Measure_Begin();
+void Screen_Measure_Update(uint8_t progressPercent, uint16_t pressure);
+
+// Zonele de atingere
+bool Screen_Start_Pressed();
+bool Screen_Restart_Pressed();
+bool Screen_Back_Pressed();
+bool Screen_View_Pressed();
 
 #endif /* HEADER_SCREENS_H_ */

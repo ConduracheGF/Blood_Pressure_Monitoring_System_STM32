@@ -25,6 +25,8 @@
 #define CULOARE_ROSU 0xF800
 #define CULOARE_VERDE 0x07E0
 #define CULOARE_ALBASTRU 0x001F
+#define CULOARE_GRI 0x2104
+#define CULOARE_GALBEN 0xFFE0
 
 // comenzi driver display ILI9486
 #define CMD_SLEEP_OUT 0x11
@@ -44,9 +46,9 @@
 #define PIXEL_FORMAT_16BIT 0x55
 #define MEMORY_ACCESS_PORTRAIT_BGR 0x48
 
-void lcd_init();
-bool lcd_set_window(uint16_t x_start, uint16_t y_start, uint16_t x_finish, uint16_t y_finish);
-void lcd_write_pixels(const uint16_t *pixels, uint32_t nr_of_pixels);
-void lcd_fill_rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
+void LCD_Init();
+bool LCD_Set_Window(uint16_t xStart, uint16_t yStart, uint16_t xFinish, uint16_t yFinish);
+void LCD_Write_Pixels(const uint16_t *pixels, uint32_t nrOfPixels);
+void LCD_Fill_Rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
 
 #endif /* HEADER_LCD_H_ */

@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 
-uint32_t sys_io_millis();
-void sys_io_delay_ms(uint32_t ms);
+uint32_t SYS_IO_Millis();
+void SYS_IO_Delay_MS(uint32_t ms);
 
 #endif /* HEADER_SYS_IO_H_ */

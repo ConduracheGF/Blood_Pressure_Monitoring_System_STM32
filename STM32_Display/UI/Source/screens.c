@@ -6,90 +6,205 @@
  */
 
 #include <stdio.h>
+#include <stdbool.h>
 #include "UI/Header/screens.h"
 #include "UI/Header/widgets.h"
 #include "UI/Header/layout.h"
 #include "Gfx/Header/gfx.h"
+#include "Gfx/Header/bmp.h"
 #include "Utils/Header/touchscreen.h"
+#include "Utils/Header/lcd.h"
 
-static const Rect_t screen_area = LAYOUT_SCREEN;
-static const Rect_t sys_box = LAYOUT_RESULTS_SYS_BOX;
-static const Rect_t dia_box = LAYOUT_RESULTS_DIA_BOX;
-static const Rect_t bpm_box = LAYOUT_RESULTS_BPM_BOX;
-static const Rect_t risk_box = LAYOUT_RESULTS_RISK_BOX;
+#define BAR_BORDER 2
+#define BAR_CHUNK 4
+#define PRESSURE_TEXT_SCALE 3
 
-static const Button_t start_button = {LAYOUT_START_BUTTON, "START", UI_COLOR_BUTTON};
-static const Button_t restart_button = {LAYOUT_RESULTS_RESTART_BUTTON, "RESTART", UI_COLOR_BUTTON};
+#if UI_DEBUG_ZONE
+#define DEBUG_ZONE(zone) GFX_Draw_Border((zone)->x, (zone)->y, (zone)->width, (zone)->height, 2, CULOARE_ROSU)
+#else
+#define DEBUG_ZONE(zone)
+#endif
 
-void screen_start_draw()
+static const Rect_t zoneStart = LAYOUT_ZONE_START;
+static const Rect_t zoneBack = LAYOUT_ZONE_BACK;
+static const Rect_t zoneRestart = LAYOUT_ZONE_RESTART;
+static const Rect_t zoneView = LAYOUT_ZONE_VIEW;
+static const Rect_t barArea = LAYOUT_BAR;
+static const Rect_t pressureField = LAYOUT_PRESSURE_FIELD;
+
+static uint16_t barFilledWidth = 0;
+
+static void Draw_Image(const char *name)
 {
-	gfx_clear(UI_COLOR_BACKGROUND);
-	widget_draw_text_centered(&screen_area, LAYOUT_START_TITLE_Y, "MASURARE TENSIUNE", UI_COLOR_TEXT, UI_COLOR_BACKGROUND, 2);
-	widget_draw_button(&start_button);
+	BmpStatus_t _status = BMP_Draw_File(name, 0, 0);
+	if (_status != BMP_NORMAL)
+	{
+		char _text[32];
+		GFX_Clear(UI_COLOR_BACKGROUND);
+		snprintf(_text, sizeof(_text), "%s BMP: %d", name, _status);
+		GFX_Draw_Text(10, 10, _text, CULOARE_ROSU, UI_COLOR_BACKGROUND, 2);
+	}
 }
 
-void screen_simulation_draw()
+static uint16_t Bar_Color(uint16_t positionPercent)
 {
-	gfx_clear(UI_COLOR_BACKGROUND);
-	widget_draw_text_centered(&screen_area, LAYOUT_SIMULATION_TITLE_Y, "SIMULARE", UI_COLOR_TEXT, UI_COLOR_BACKGROUND, 3);
+	if (positionPercent < 50)
+	{
+		return CULOARE_VERDE;
+	}
+	if (positionPercent < 80)
+	{
+		return UI_COLOR_YELLOW;
+	}
+	return CULOARE_ROSU;
 }
 
-// Functie de actualizare a numerelor afisate
-void screen_simulation_update(uint8_t second_left)
+static bool Zone_Pressed(const Rect_t *zone)
 {
-	char text[8];
-	snprintf(text, sizeof(text), "%2u", second_left);
-	widget_draw_text_centered(&screen_area, LAYOUT_SIMULATION_COUNTER_Y, text, UI_COLOR_VALUE, UI_COLOR_BACKGROUND, 4);
+	TouchPoint_t _point;
+	return Touch_Get_Point(&_point) && Widget_Contains(zone, _point.x, _point.y);
 }
 
-void screen_results_draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t risk_percent, ScreenRisk_t risk)
+void Screen_Logo_Draw()
 {
-	char text[8];
-	const char *risk_title = "NORMAL";
-	uint16_t risk_color = UI_COLOR_VALUE;
+	Draw_Image(IMAGE_LOGO);
+}
+
+void Screen_Project_Draw()
+{
+	Draw_Image(IMAGE_PROJECT);
+}
+
+void Screen_Start_Draw()
+{
+	Draw_Image(IMAGE_START);
+	DEBUG_ZONE(&zoneStart);
+}
+
+void Screen_Menu_Draw()
+{
+	Draw_Image(IMAGE_MENU);
+	DEBUG_ZONE(&zoneRestart);
+	DEBUG_ZONE(&zoneView);
+}
+
+void Screen_Measure_Draw()
+{
+	Draw_Image(IMAGE_MEASURE);
+	DEBUG_ZONE(&barArea);
+}
+
+static bool compareThreshold(uint16_t prag)
+{
+	return (prag > 100) ? true : false;
+}
+
+void Screen_Results_Draw(uint16_t sys, uint16_t dia, uint16_t bpm, uint8_t riskPercent, ScreenRisk_t risk)
+{
+	char _text[24];
+	const char *_riskTitle = "-";
 
 	if (risk == SCREEN_RISK_HYPER)
 	{
-		risk_title = "RISC HIPER";
-		risk_color = UI_COLOR_RISK;
+		_riskTitle = "H";
 	}
 	else if (risk == SCREEN_RISK_HYPO)
 	{
-		risk_title = "RISC HIPO";
-		risk_color = UI_COLOR_RISK;
+		_riskTitle = "h";
 	}
 
-	gfx_clear(UI_COLOR_BACKGROUND);
-	widget_draw_text_centered(&screen_area, LAYOUT_RESULTS_TITLE_Y, "REZULTATE", UI_COLOR_TEXT, UI_COLOR_BACKGROUND, 3);
+	Draw_Image(IMAGE_RESULTS);
 
-	snprintf(text, sizeof(text), "%u", sys);
-	widget_draw_value_box(&sys_box, "SYS", text, UI_COLOR_VALUE);
+	snprintf(_text, sizeof(_text), "%u", sys);
+	if (compareThreshold(sys)){
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_SYS_X100, LAYOUT_RESULT_SYS_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	} else {
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_SYS_X, LAYOUT_RESULT_SYS_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	}
 
-	snprintf(text, sizeof(text), "%u", dia);
-	widget_draw_value_box(&dia_box, "DIA", text, UI_COLOR_VALUE);
+	snprintf(_text, sizeof(_text), "%u", dia);
+	if (compareThreshold(dia))
+	{
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_DIA_X100, LAYOUT_RESULT_DIA_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	} else {
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_DIA_X, LAYOUT_RESULT_DIA_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	}
 
-	snprintf(text, sizeof(text), "%u", bpm);
-	widget_draw_value_box(&bpm_box, "BPM", text, UI_COLOR_VALUE);
+	snprintf(_text, sizeof(_text), "%u", bpm);
+	if (compareThreshold(bpm))
+	{
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_BPM_X100, LAYOUT_RESULT_BPM_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	} else {
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_BPM_X, LAYOUT_RESULT_BPM_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	}
 
+	snprintf(_text, sizeof(_text), "%u%%", riskPercent);
+	if (compareThreshold(riskPercent))
+	{
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_RISK_X100, LAYOUT_RESULT_RISK_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	} else {
+		GFX_Draw_Text_Overlay(LAYOUT_RESULT_RISK_X, LAYOUT_RESULT_RISK_Y, _text, UI_COLOR_OVERLAY, LAYOUT_RESULT_SCALE);
+	}
 
-	snprintf(text, sizeof(text), "%u%%", risk_percent);
-	widget_draw_value_box(&risk_box, risk_title, text, risk_color);
+	DEBUG_ZONE(&zoneBack);
+}
 
-	widget_draw_button(&restart_button);
+void Screen_Measure_Begin()
+{
+	GFX_Draw_Border(barArea.x, barArea.y, barArea.width, barArea.height, BAR_BORDER, UI_COLOR_TEXT);
+	LCD_Fill_Rect(barArea.x + BAR_BORDER, barArea.y + BAR_BORDER, barArea.width - 2 * BAR_BORDER, barArea.height - 2 * BAR_BORDER, UI_COLOR_BAR_EMPTY);
+	LCD_Fill_Rect(pressureField.x, pressureField.y, pressureField.width, pressureField.height, UI_COLOR_FIELD);
+	barFilledWidth = 0;
+}
+
+void Screen_Measure_Update(uint8_t progressPercent, uint16_t pressure)
+{
+	char _text[16];
+	uint16_t _innerWidth = barArea.width - 2 * BAR_BORDER;
+	uint16_t _newWidth = (uint32_t)progressPercent * _innerWidth / 100;
+
+	for (uint16_t offset = barFilledWidth; offset < _newWidth; offset += BAR_CHUNK)
+	{
+		uint16_t _width = _newWidth - offset;
+		if (_width > BAR_CHUNK)
+		{
+			_width = BAR_CHUNK;
+		}
+		LCD_Fill_Rect(barArea.x + BAR_BORDER + offset, barArea.y + BAR_BORDER, _width,
+				barArea.height - 2 * BAR_BORDER, Bar_Color(offset * 100 / _innerWidth));
+	}
+	if (_newWidth > barFilledWidth)
+	{
+		barFilledWidth = _newWidth;
+	}
+
+	snprintf(_text, sizeof(_text), "%3u MMGH", pressure);
+	uint16_t _textY = pressureField.y + (pressureField.height - GFX_Text_Height(PRESSURE_TEXT_SCALE)) / 2;
+	Widget_Draw_Text_Centered(&pressureField, _textY, _text, UI_COLOR_TEXT, UI_COLOR_FIELD, PRESSURE_TEXT_SCALE);
 }
 
 static bool Button_Pressed(const Button_t *button)
 {
 	TouchPoint_t _point;
-	return Touch_Get_Point(&_point) && widget_contains(&button->area, _point.x, _point.y);
+	return Touch_Get_Point(&_point) && Widget_Contains(&button->area, _point.x, _point.y);
 }
 
-bool screen_start_button_pressed()
+bool Screen_Start_Pressed()
 {
-	return Button_Pressed(&start_button);
+	return Zone_Pressed(&zoneStart);
 }
 
-bool screen_restart_button_pressed()
+bool Screen_Back_Pressed()
 {
-	return Button_Pressed(&restart_button);
+	return Zone_Pressed(&zoneBack);
+}
+
+bool Screen_Restart_Pressed()
+{
+	return Zone_Pressed(&zoneRestart);
+}
+
+bool Screen_View_Pressed()
+{
+	return Zone_Pressed(&zoneView);
 }

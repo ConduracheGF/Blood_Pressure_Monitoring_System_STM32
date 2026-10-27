@@ -1,2 +1,2 @@
-../IO/Source/sys_io.c:11:10:sys_io_millis	1
-../IO/Source/sys_io.c:16:6:sys_io_delay_ms	1
+../IO/Source/sys_io.c:11:10:SYS_IO_Millis	1
+../IO/Source/sys_io.c:16:6:SYS_IO_Delay_MS	1

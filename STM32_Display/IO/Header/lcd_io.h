@@ -10,12 +10,12 @@
 
 #include <stdint.h>
 
-void lcd_io_init();
-void lcd_io_reset();
-void lcd_io_write_data(uint8_t data);
-void lcd_io_write_command(uint8_t cmd);
-void lcd_io_write_pixels(const uint16_t *pixels, uint32_t nr_of_pixels);
-void lcd_io_fill_color(uint16_t color, uint32_t nr_of_pixels);
-uint16_t lcd_io_test_data_bus();
+void LCD_IO_Init();
+void LCD_IO_Reset();
+void LCD_IO_Write_Data(uint8_t data);
+void LCD_IO_Write_Command(uint8_t cmd);
+void LCD_IO_Write_Pixels(const uint16_t *pixels, uint32_t nrOfPixels);
+void LCD_IO_Fill_Color(uint16_t color, uint32_t nrOfPixels);
+uint16_t LCD_IO_Test_Data_Bus();
 
 #endif /* HEADER_LCD_IO_H_ */

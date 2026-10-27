@@ -377,9 +377,9 @@ static void Wait_Touch(uint16_t *x, uint16_t *y)
 	{
 		while (Touch_IO_Read_Pressure() < TOUCH_THRESHOLD)
 		{
-			sys_io_delay_ms(10);
+			SYS_IO_Delay_MS(10);
 		}
-		sys_io_delay_ms(100);		// apasarea se stabilizeaza
+		SYS_IO_Delay_MS(100);		// apasarea se stabilizeaza
 
 		for (uint8_t index = 0; index < 8; index++)
 		{
@@ -389,7 +389,7 @@ static void Wait_Touch(uint16_t *x, uint16_t *y)
 				_sum_y += Touch_IO_Read_Y();
 				_samples++;
 			}
-			sys_io_delay_ms(5);
+			SYS_IO_Delay_MS(5);
 		}
 	}
 
@@ -402,9 +402,9 @@ static void Wait_Release()
 {
 	while (Touch_IO_Read_Pressure() >= TOUCH_THRESHOLD)
 	{
-		sys_io_delay_ms(10);
+		SYS_IO_Delay_MS(10);
 	}
-	sys_io_delay_ms(200);		// anti-tresarire
+	SYS_IO_Delay_MS(200);		// anti-tresarire
 }
 /* USER CODE END 4 */
 

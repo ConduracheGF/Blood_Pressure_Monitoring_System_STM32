@@ -8,12 +8,12 @@
 #include "main.h"
 #include "IO/Header/sys_io.h"
 
-uint32_t sys_io_millis()
+uint32_t SYS_IO_Millis()
 {
 	return HAL_GetTick();
 }
 
-void sys_io_delay_ms(uint32_t ms)
+void SYS_IO_Delay_MS(uint32_t ms)
 {
 	HAL_Delay(ms);
 }

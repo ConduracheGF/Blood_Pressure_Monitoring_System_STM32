@@ -1,8 +1,10 @@
-../App/Source/app.c:26:13:Enter_Start	8	static
-../App/Source/app.c:32:13:Show_Photo	16	static
-../App/Source/app.c:44:13:Enter_Photos	8	static
-../App/Source/app.c:57:13:Enter_Results	32	static
-../App/Source/app.c:75:13:Enter_Simulation	8	static
-../App/Source/app.c:84:13:Update_Simulation	16	static
-../App/Source/app.c:101:6:APP_Init	8	static
+../App/Source/app.c:21:13:Enter_Logo	8	static
+../App/Source/app.c:28:13:Enter_Project	8	static
+../App/Source/app.c:35:13:Enter_Start	8	static
+../App/Source/app.c:41:13:Enter_Menu	8	static
+../App/Source/app.c:47:13:Enter_Results	32	static
+../App/Source/app.c:63:13:Enter_Measure	8	static
+../App/Source/app.c:75:17:Cuff_Pressure	24	static
+../App/Source/app.c:87:13:Update_Measure	16	static
+../App/Source/app.c:105:6:APP_Init	8	static
 ../App/Source/app.c:112:6:APP_Run	8	static

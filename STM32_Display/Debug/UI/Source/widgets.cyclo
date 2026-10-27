@@ -1,4 +1,4 @@
-../UI/Source/widgets.c:19:6:widget_draw_text_centered	2
-../UI/Source/widgets.c:31:6:widget_draw_button	1
-../UI/Source/widgets.c:39:6:widget_draw_value_box	1
-../UI/Source/widgets.c:49:6:widget_contains	5
+../UI/Source/widgets.c:19:6:Widget_Draw_Text_Centered	2
+../UI/Source/widgets.c:31:6:WidgetDrawButton	1
+../UI/Source/widgets.c:39:6:Widget_Draw_Value_Box	1
+../UI/Source/widgets.c:49:6:Widget_Contains	5

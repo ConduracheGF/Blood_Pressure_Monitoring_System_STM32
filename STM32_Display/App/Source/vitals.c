@@ -13,9 +13,9 @@ static uint16_t Random_Between(uint16_t minim, uint16_t maxim)
 	return minim + rand() % (maxim - minim + 1);
 }
 
-static uint8_t Percent(int32_t value, int32_t normal_limit, int32_t extreme_limit)
+static uint8_t Percent(int32_t value, int32_t normalLimit, int32_t extremeLimit)
 {
-	int32_t _percent = (value - normal_limit) * 100 / (extreme_limit - normal_limit);
+	int32_t _percent = (value - normalLimit) * 100 / (extremeLimit - normalLimit);
 	if (_percent < 0)
 	{
 		return 0;
@@ -53,9 +53,9 @@ void Vitals_Generate(Vitals_t *vitals)
 	uint8_t _hypo = Max(Percent(vitals->sys, HYPO_SYS_NORMAL, HYPO_SYS_EXTREME),
 						Percent(vitals->dia, HYPO_DIA_NORMAL, HYPO_DIA_EXTREME));
 
-	vitals->tensiune.risk_percent = Max(_hyper, _hypo);
+	vitals->tensiune.riskPercent = Max(_hyper, _hypo);
 
-	if (vitals->tensiune.risk_percent > VITALS_RISK_THRESHOLD)
+	if (vitals->tensiune.riskPercent > VITALS_RISK_THRESHOLD)
 	{
 		vitals->tensiune.risk = true;
 		vitals->tensiune.type = (_hyper > _hypo) ? HYPER : HYPO;
