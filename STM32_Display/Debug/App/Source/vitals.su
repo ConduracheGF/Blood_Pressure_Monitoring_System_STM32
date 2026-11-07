@@ -1,5 +1,2 @@
-../App/Source/vitals.c:11:17:Random_Between	16	static
-../App/Source/vitals.c:16:16:Percent	32	static
-../App/Source/vitals.c:30:16:Max	16	static
-../App/Source/vitals.c:35:6:Vitals_Seed	16	static
-../App/Source/vitals.c:40:6:Vitals_Generate	32	static
+../App/Source/vitals.c:35:6:Vitals_Seed	0	static
+../App/Source/vitals.c:40:6:Vitals_Generate	16	static

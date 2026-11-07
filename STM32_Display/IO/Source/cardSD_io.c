@@ -57,7 +57,7 @@ void SD_IO_Set_Speed(SdIoSpeed_t speed)
 {
 	if (speed == SD_IO_SPEED_FAST)
 	{
-		hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
+		hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4; // SPI_BAUDRATEPRESCALER_8
 	}
 	else
 	{

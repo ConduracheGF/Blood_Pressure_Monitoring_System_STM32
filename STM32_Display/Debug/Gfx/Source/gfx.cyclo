@@ -1,7 +1,8 @@
+../Gfx/Source/gfx.c:35:6:GFX_Draw_Char.part.0	8
 ../Gfx/Source/gfx.c:16:6:GFX_Clear	1
 ../Gfx/Source/gfx.c:22:6:GFX_Draw_Border	4
-../Gfx/Source/gfx.c:35:6:GFX_Draw_Char	14
-../Gfx/Source/gfx.c:73:6:GFX_Draw_Text	2
+../Gfx/Source/gfx.c:35:6:GFX_Draw_Char	2
+../Gfx/Source/gfx.c:73:6:GFX_Draw_Text	5
 ../Gfx/Source/gfx.c:82:10:GFX_Text_Width	1
 ../Gfx/Source/gfx.c:87:10:GFX_Text_Height	1
-../Gfx/Source/gfx.c:92:6:GFX_Draw_Text_Overlay	9
+../Gfx/Source/gfx.c:92:6:GFX_Draw_Text_Overlay	8

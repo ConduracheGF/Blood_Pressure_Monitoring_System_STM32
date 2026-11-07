@@ -1,8 +1,4 @@
-../IO/Source/touchscreen_io.c:34:13:Pin_Output	1
-../IO/Source/touchscreen_io.c:49:13:Pin_Floating	1
-../IO/Source/touchscreen_io.c:58:13:Pin_Analog	1
-../IO/Source/touchscreen_io.c:67:13:Restore_Lcd_Pins	1
 ../IO/Source/touchscreen_io.c:75:17:Read_Adc	3
 ../IO/Source/touchscreen_io.c:104:10:Touch_IO_Read_X	1
 ../IO/Source/touchscreen_io.c:121:10:Touch_IO_Read_Y	1
-../IO/Source/touchscreen_io.c:140:10:Touch_IO_Read_Pressure	3
+../IO/Source/touchscreen_io.c:140:10:Touch_IO_Read_Pressure	1

@@ -1,5 +1,2 @@
-../App/Source/vitals.c:11:17:Random_Between	1
-../App/Source/vitals.c:16:16:Percent	3
-../App/Source/vitals.c:30:16:Max	1
 ../App/Source/vitals.c:35:6:Vitals_Seed	1
-../App/Source/vitals.c:40:6:Vitals_Generate	4
+../App/Source/vitals.c:40:6:Vitals_Generate	24

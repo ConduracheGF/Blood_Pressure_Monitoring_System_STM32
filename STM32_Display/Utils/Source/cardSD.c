@@ -29,6 +29,9 @@
 #define SD_READ_TOKEN_TIMEOUT_MS 200
 #define SD_READY_TIMEOUT_MS 500
 
+#define SD_CMD_STOP_TRANSMISSION 12
+#define SD_CMD_READ_MULTIPLE_BLOCK 18
+
 static bool cardReady = false;
 
 /*
@@ -198,6 +201,46 @@ SdStatus_t SD_Init()
 	return SD_NORMAL;
 }
 
+static SdStatus_t Receive_Data_Block(uint8_t *buffer)
+{
+	uint8_t _token = 0xFF;
+	uint32_t _start = SYS_IO_Millis();
+
+	while (_token == 0xFF && (SYS_IO_Millis() - _start) < SD_READ_TOKEN_TIMEOUT_MS)
+	{
+		_token = SD_IO_Transfer_Byte(0xFF);
+	}
+
+	if (_token != SD_DATA_TOKEN_START)
+	{
+		return SD_ERROR_READ;
+	}
+
+	SD_IO_Receive_Bytes(buffer, SD_BLOCK_SIZE);
+	SD_IO_Transfer_Byte(0xFF);
+	SD_IO_Transfer_Byte(0xFF);
+	return SD_NORMAL;
+}
+
+static void Stop_Transmission()
+{
+	SD_IO_Transfer_Byte(0x40 | SD_CMD_STOP_TRANSMISSION);
+	SD_IO_Transfer_Byte(0);
+	SD_IO_Transfer_Byte(0);
+	SD_IO_Transfer_Byte(0);
+	SD_IO_Transfer_Byte(0);
+	SD_IO_Transfer_Byte(0x01);
+	SD_IO_Transfer_Byte(0xFF);
+
+	for (uint8_t _count = 0; _count < 10; _count++)
+	{
+		if (SD_IO_Transfer_Byte(0xFF) != 0xFF)
+		{
+			break;
+		}
+	}
+}
+
 // Citire de blocuri pe 512 octeti
 SdStatus_t SD_Read_Block(uint32_t block, uint8_t *buffer)
 {
@@ -212,24 +255,37 @@ SdStatus_t SD_Read_Block(uint32_t block, uint8_t *buffer)
 		return SD_ERROR_READ;
 	}
 
-	uint8_t _token = 0xFF;
-	uint32_t _start = SYS_IO_Millis();
+	SdStatus_t _status = Receive_Data_Block(buffer);
+	Deselect_Card();
 
-	while (_token == 0xFF && (SYS_IO_Millis() - _start) < SD_READ_TOKEN_TIMEOUT_MS)
-	{
-		_token = SD_IO_Transfer_Byte(0xFF);
-	}
+	return _status;
+}
 
-	while (_token != SD_DATA_TOKEN_START)
+SdStatus_t SD_Read_Blocks(uint32_t block, uint8_t *buffer, uint32_t count)
+{
+	if (count == 0)
+		return SD_NORMAL;
+
+	if (count == 1)
+		return SD_Read_Block(block, buffer);
+
+	if (!cardReady)
+		return SD_ERROR_NO_CARD;
+
+	if (Send_Command(SD_CMD_READ_MULTIPLE_BLOCK, block, 0x01) != SD_R1_READY)
 	{
 		Deselect_Card();
 		return SD_ERROR_READ;
 	}
 
-	SD_IO_Receive_Bytes(buffer, SD_BLOCK_SIZE);
-	SD_IO_Transfer_Byte(0xFF);
-	SD_IO_Transfer_Byte(0xFF);
+	SdStatus_t _status = SD_NORMAL;
+	for (uint32_t _index = 0; _index < count && _status == SD_NORMAL; _index++)
+	{
+		_status = Receive_Data_Block(buffer + _index * SD_BLOCK_SIZE);
+	}
+
+	Stop_Transmission();
 	Deselect_Card();
 
-	return SD_NORMAL;
+	return _status;
 }

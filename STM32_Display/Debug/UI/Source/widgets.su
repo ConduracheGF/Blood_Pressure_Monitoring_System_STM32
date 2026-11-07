@@ -1,4 +1,4 @@
-../UI/Source/widgets.c:19:6:Widget_Draw_Text_Centered	40	static
-../UI/Source/widgets.c:31:6:WidgetDrawButton	40	static
-../UI/Source/widgets.c:39:6:Widget_Draw_Value_Box	48	static
-../UI/Source/widgets.c:49:6:Widget_Contains	16	static
+../UI/Source/widgets.c:19:6:Widget_Draw_Text_Centered	32	static
+../UI/Source/widgets.c:31:6:WidgetDrawButton	32	static
+../UI/Source/widgets.c:39:6:Widget_Draw_Value_Box	32	static
+../UI/Source/widgets.c:49:6:Widget_Contains	0	static

@@ -123,12 +123,9 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
-    for (UINT index = 0; index < count; index++)
+    if (SD_Read_Blocks(sector, buff, count) != SD_NORMAL)
     {
-    	if (SD_Read_Block(sector + index, buff + (index * SD_BLOCK_SIZE)) != SD_NORMAL)
-    	{
-    		return RES_ERROR;
-    	}
+    	return RES_ERROR;
     }
     return RES_OK;
   /* USER CODE END READ */

@@ -1,7 +1,8 @@
-../Gfx/Source/gfx.c:16:6:GFX_Clear	24	static
-../Gfx/Source/gfx.c:22:6:GFX_Draw_Border	32	static
-../Gfx/Source/gfx.c:35:6:GFX_Draw_Char	40	static
+../Gfx/Source/gfx.c:35:6:GFX_Draw_Char.part.0	56	static
+../Gfx/Source/gfx.c:16:6:GFX_Clear	16	static
+../Gfx/Source/gfx.c:22:6:GFX_Draw_Border	40	static
+../Gfx/Source/gfx.c:35:6:GFX_Draw_Char	8	static
 ../Gfx/Source/gfx.c:73:6:GFX_Draw_Text	40	static
-../Gfx/Source/gfx.c:82:10:GFX_Text_Width	16	static
-../Gfx/Source/gfx.c:87:10:GFX_Text_Height	16	static
-../Gfx/Source/gfx.c:92:6:GFX_Draw_Text_Overlay	48	static
+../Gfx/Source/gfx.c:82:10:GFX_Text_Width	8	static
+../Gfx/Source/gfx.c:87:10:GFX_Text_Height	0	static
+../Gfx/Source/gfx.c:92:6:GFX_Draw_Text_Overlay	64	static

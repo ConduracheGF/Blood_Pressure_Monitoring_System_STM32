@@ -27,5 +27,6 @@ typedef enum {
 
 SdStatus_t SD_Init();
 SdStatus_t SD_Read_Block(uint32_t block, uint8_t *buffer);
+SdStatus_t SD_Read_Blocks(uint32_t block, uint8_t *buffer, uint32_t count);
 
 #endif /* HEADER_CARDSD_H_ */

@@ -1,8 +1,8 @@
-../IO/Source/lcd_io.c:57:13:Bus_Write_Byte	2
-../IO/Source/lcd_io.c:69:6:LCD_IO_Init	1
-../IO/Source/lcd_io.c:78:6:LCD_IO_Reset	1
-../IO/Source/lcd_io.c:85:6:LCD_IO_Write_Command	1
-../IO/Source/lcd_io.c:93:6:LCD_IO_Write_Data	1
-../IO/Source/lcd_io.c:101:6:LCD_IO_Write_Pixels	2
-../IO/Source/lcd_io.c:114:6:LCD_IO_Fill_Color	2
-../IO/Source/lcd_io.c:127:10:LCD_IO_Test_Data_Bus	5
+../IO/Source/lcd_io.c:94:13:Bus_Write_Byte	1
+../IO/Source/lcd_io.c:105:6:LCD_IO_Init	6
+../IO/Source/lcd_io.c:115:6:LCD_IO_Reset	1
+../IO/Source/lcd_io.c:122:6:LCD_IO_Write_Command	1
+../IO/Source/lcd_io.c:130:6:LCD_IO_Write_Data	1
+../IO/Source/lcd_io.c:138:6:LCD_IO_Write_Pixels	3
+../IO/Source/lcd_io.c:151:6:LCD_IO_Fill_Color	3
+../IO/Source/lcd_io.c:164:10:LCD_IO_Test_Data_Bus	5

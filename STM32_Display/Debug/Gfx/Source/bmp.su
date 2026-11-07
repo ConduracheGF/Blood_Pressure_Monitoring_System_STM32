@@ -1,3 +1,1 @@
-../Gfx/Source/bmp.c:31:17:Read16	16	static
-../Gfx/Source/bmp.c:36:17:Read32	16	static
-../Gfx/Source/bmp.c:41:13:BMP_Draw_File	120	static
+../Gfx/Source/bmp.c:47:13:BMP_Draw_File	208	static

@@ -7,25 +7,31 @@
  *			octetul 18 = latime
  *			octetul 22 = inaltime
  *						 inaltime pozitiva = randurile sunt de jos in sus
- *			octetul 28 = biti pe pixel
+ *			octetul 28 = biti pe pixel (24 sau 32)
  *			octetul 30 = compresie
  *						 valoarea 0 => necomprimat
+ *						 valoarea 3 => BITFIELDS (acceptat doar pe 32 de biti, cu ordinea B,G,R,A)
  *		Fiecare rand e completat cu 0 pana la multiplu de 4 octeti
+ *		Pe 32 de biti fiecare pixel are B, G, R si alfa (alfa se ignora)
  *
  *  Created on: 13 Oct 2026
  *      Author: Condurache Gabriel
  */
 
+#include <stdio.h>		// TEMPORAR
 #include <stdbool.h>
+#include "main.h"		// TEMPORAR: pentru contorul de cicluri DWT
 #include "Gfx/Header/bmp.h"
+#include "Gfx/Header/gfx.h"		// TEMPORAR
 #include "Utils/Header/lcd.h"
 #include "Utils/Header/cardFS.h"
 
 #define BMP_HEADER_SIZE 54
 #define BMP_SIGNATURE 0x4D42
 #define BMP_MAX_BYTES_PER_PIXEL 4
+#define BMP_ROWS_PER_READ 8
 
-static uint8_t rowBuffer[LCD_WIDTH * BMP_MAX_BYTES_PER_PIXEL]; // Randul din fisier contine B,G,R
+static uint8_t chunkBuffer[LCD_WIDTH * BMP_MAX_BYTES_PER_PIXEL * BMP_ROWS_PER_READ]; // Randul din fisier contine B,G,R (+ alfa pe 32 de biti)
 static uint16_t pixelBuffer[LCD_WIDTH];
 
 static uint16_t Read16(const uint8_t *data)
@@ -42,6 +48,12 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 {
 	uint8_t _header[BMP_HEADER_SIZE];
 	uint16_t _bytesRead;
+
+	uint32_t _cycles_sd = 0;		// TEMPORAR
+	uint32_t _cycles_pixels = 0;	// TEMPORAR
+	uint32_t _mark;					// TEMPORAR
+	CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;		// TEMPORAR
+	DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;				// TEMPORAR
 
 	if (FS_Open(name) != FS_NORMAL){
 		return BMP_ERROR_OPEN;
@@ -85,25 +97,54 @@ BmpStatus_t BMP_Draw_File(const char *name, uint16_t x, uint16_t y)
 		return BMP_ERROR_READ;
 	}
 
-	for (int32_t row = 0; row < _height; row++){
-		if (FS_Read(rowBuffer, _rowSize, &_bytesRead) != FS_NORMAL || _bytesRead < (_width * _bytesPerPixel)) {
+	int32_t _row = 0;
+	while (_row < _height)
+	{
+		int32_t _rowsNow = _height - _row;
+		if (_rowsNow > BMP_ROWS_PER_READ)
+		{
+			_rowsNow = BMP_ROWS_PER_READ;
+		}
+
+		uint32_t _needed = (_rowsNow - 1) * _rowSize + _width * _bytesPerPixel;
+
+		_mark = DWT->CYCCNT; // TEMPORAR
+		if (FS_Read(chunkBuffer, _rowsNow * _rowSize, &_bytesRead) != FS_NORMAL || _bytesRead < _needed)
+		{
 			FS_Close();
 			return BMP_ERROR_READ;
 		}
 
-		// Conversie RGB565
-		for (int32_t column = 0; column < _width; column++) {
-			uint8_t _blue = rowBuffer[column * _bytesPerPixel];
-			uint8_t _green = rowBuffer[column * _bytesPerPixel + 1];
-			uint8_t _red = rowBuffer[column * _bytesPerPixel + 2];
-			pixelBuffer[column] = ((_red & 0x0F8) << 8) | ((_green & 0xFC) << 3) | (_blue >> 3);
+		_cycles_sd += DWT->CYCCNT - _mark;	// TEMPORAR
+
+		_mark = DWT->CYCCNT;	// TEMPORAR
+		for (int32_t _index = 0; _index < _rowsNow; _index++){
+			const uint8_t *_rowData = &chunkBuffer[_index * _rowSize];
+
+			// Conversie RGB565
+			for (int32_t _column = 0; _column < _width; _column++) {
+				uint8_t _blue = _rowData[_column * _bytesPerPixel];
+				uint8_t _green = _rowData[_column * _bytesPerPixel + 1];
+				uint8_t _red = _rowData[_column * _bytesPerPixel + 2];
+				pixelBuffer[_column] = ((_red & 0x0F8) << 8) | ((_green & 0xFC) << 3) | (_blue >> 3);
+			}
+
+			int32_t _fileRow = _row + _index;
+			uint16_t _screenRow = _bottomUp ? (y + _height - 1 - _fileRow) : (y + _fileRow);
+			LCD_Set_Window(x, _screenRow, x + _width - 1, _screenRow);
+			LCD_Write_Pixels(pixelBuffer, _width);
 		}
 
-		uint16_t _screenRow = _bottomUp ? (y + _height - 1 - row) : (y + row);
-		LCD_Set_Window(x, _screenRow, x + _width - 1, _screenRow);
-		LCD_Write_Pixels(pixelBuffer, _width);
+		_cycles_pixels += DWT->CYCCNT - _mark;	// TEMPORAR
+
+		_row += _rowsNow;
 	}
 
 	FS_Close();
+
+	char _text[32];		// TEMPORAR
+	snprintf(_text, sizeof(_text), "SD:%lu PIX:%lu", _cycles_sd / (SystemCoreClock / 1000), _cycles_pixels / (SystemCoreClock / 1000));		// TEMPORAR
+	GFX_Draw_Text(5, 5, _text, CULOARE_ROSU, CULOARE_NEGRU, 2);		// TEMPORAR
+
 	return BMP_NORMAL;
 }

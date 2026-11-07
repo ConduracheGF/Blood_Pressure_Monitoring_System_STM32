@@ -52,22 +52,59 @@ static GPIO_TypeDef * const dataPorts[8] = {
 	LCD_D7_GPIO_Port
 };
 
+static uint32_t bsrrA[256];
+static uint32_t bsrrB[256];
+static uint32_t bsrrC[256];
+
+/*
+ * bit 1 => pin = HIGH (jumatatea de jos a BSRR)
+ * bit 0 => pin = LOW (jumatatea de sus a BSRR)
+ */
+static void Build_Tables()
+{
+	for (uint16_t _value = 0; _value < 256; _value++)
+	{
+		bsrrA[_value] = 0;
+		bsrrB[_value] = 0;
+		bsrrC[_value] = 0;
+
+		for (uint8_t _bit = 0; _bit < 8; _bit++)
+		{
+			uint32_t _mask = dataPins[_bit];
+			uint32_t _bsrr = (_value & (1 << _bit)) ? _mask : (_mask << 16);
+
+			if (dataPorts[_bit] == GPIOA)
+			{
+				bsrrA[_value] |= _bsrr;
+			}
+			else if (dataPorts[_bit] == GPIOB)
+			{
+				bsrrB[_value] |= _bsrr;
+			}
+			else
+			{
+				bsrrC[_value] |= _bsrr;
+			}
+		}
+	}
+}
+
 // Serial Paralel 8 bit writing protocol dedicat pentru modulul de display folosit
 // Scriem bit-cu-bit cate un octet in data si il trimitem prin semnalul de WR
 static void Bus_Write_Byte(uint8_t octet)
 {
-	for (uint8_t bit = 0; bit < 8; bit++)
-	{
-		// Pregatim pe rand fiecare pin corespunzator
-		GPIO_PinState bitSetat = (octet & (1 << bit)) ? GPIO_PIN_SET: GPIO_PIN_RESET;
-		HAL_GPIO_WritePin(dataPorts[bit], dataPins[bit], bitSetat);
-	}
+	GPIOA->BSRR = bsrrA[octet];
+	GPIOB->BSRR = bsrrB[octet];
+	GPIOC->BSRR = bsrrC[octet];
 	WR_LOW();
+	__NOP();
+	__NOP();
 	WR_HIGH();
 }
 
 void LCD_IO_Init()
 {
+	Build_Tables();
 	RD_HIGH();
 	WR_HIGH();
 	CS_HIGH();

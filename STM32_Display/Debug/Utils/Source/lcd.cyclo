@@ -1,5 +1,4 @@
-../Utils/Source/lcd.c:12:13:Write_Command	2
-../Utils/Source/lcd.c:21:6:LCD_Init	1
+../Utils/Source/lcd.c:21:6:LCD_Init	4
 ../Utils/Source/lcd.c:57:6:LCD_Set_Window	5
 ../Utils/Source/lcd.c:82:6:LCD_Write_Pixels	1
 ../Utils/Source/lcd.c:87:6:LCD_Fill_Rect	7

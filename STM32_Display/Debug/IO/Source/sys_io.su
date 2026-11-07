@@ -1,2 +1,2 @@
-../IO/Source/sys_io.c:11:10:SYS_IO_Millis	8	static
-../IO/Source/sys_io.c:16:6:SYS_IO_Delay_MS	16	static
+../IO/Source/sys_io.c:11:10:SYS_IO_Millis	0	static
+../IO/Source/sys_io.c:16:6:SYS_IO_Delay_MS	0	static

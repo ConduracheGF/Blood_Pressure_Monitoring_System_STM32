@@ -14,6 +14,7 @@
 #include "Gfx/Header/bmp.h"
 #include "Utils/Header/touchscreen.h"
 #include "Utils/Header/lcd.h"
+#include "IO/Header/sys_io.h"
 
 #define BAR_BORDER 2
 #define BAR_CHUNK 4
@@ -36,7 +37,9 @@ static uint16_t barFilledWidth = 0;
 
 static void Draw_Image(const char *name)
 {
+	uint32_t _start = SYS_IO_Millis(); // TEMPORAR
 	BmpStatus_t _status = BMP_Draw_File(name, 0, 0);
+	uint32_t _elapsed = SYS_IO_Millis() - _start;	// TEMPORAR
 	if (_status != BMP_NORMAL)
 	{
 		char _text[32];
@@ -44,6 +47,9 @@ static void Draw_Image(const char *name)
 		snprintf(_text, sizeof(_text), "%s BMP: %d", name, _status);
 		GFX_Draw_Text(10, 10, _text, CULOARE_ROSU, UI_COLOR_BACKGROUND, 2);
 	}
+	char _time[16];	// TEMPORAR
+	snprintf(_time, sizeof(_time), "%lu MS", _elapsed);	// TEMPORAR
+	GFX_Draw_Text(5, LCD_HEIGHT - 20, _time, CULOARE_ALB, CULOARE_NEGRU, 2);	// TEMPORAR
 }
 
 static uint16_t Bar_Color(uint16_t positionPercent)
