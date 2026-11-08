@@ -51,4 +51,9 @@ bool LCD_Set_Window(uint16_t xStart, uint16_t yStart, uint16_t xFinish, uint16_t
 void LCD_Write_Pixels(const uint16_t *pixels, uint32_t nrOfPixels);
 void LCD_Fill_Rect(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t color);
 
+// Muttex pentru BUS
+void LCD_Lock();
+void LCD_Unlock();
+bool LCD_IsLocked();
+
 #endif /* HEADER_LCD_H_ */

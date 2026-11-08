@@ -9,6 +9,24 @@
 #include "IO/Header/sys_io.h"
 #include "IO/Header/lcd_io.h"
 
+// Mutex magistrala
+volatile bool lcdBusLocked = false;
+
+void LCD_Lock()
+{
+	lcdBusLocked = true;
+}
+
+void LCD_Unlock()
+{
+	lcdBusLocked = false;
+}
+
+bool LCD_IsLocked()
+{
+	return lcdBusLocked;
+}
+
 static void Write_Command(uint8_t cmd, const uint8_t *parameters, uint8_t nrOfParameters)
 {
 	LCD_IO_Write_Command(cmd);

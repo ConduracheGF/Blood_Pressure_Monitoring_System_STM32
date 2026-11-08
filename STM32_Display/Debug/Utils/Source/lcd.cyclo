@@ -1,4 +1,7 @@
-../Utils/Source/lcd.c:21:6:LCD_Init	4
-../Utils/Source/lcd.c:57:6:LCD_Set_Window	5
-../Utils/Source/lcd.c:82:6:LCD_Write_Pixels	1
-../Utils/Source/lcd.c:87:6:LCD_Fill_Rect	7
+../Utils/Source/lcd.c:15:6:LCD_Lock	1
+../Utils/Source/lcd.c:20:6:LCD_Unlock	1
+../Utils/Source/lcd.c:25:6:LCD_IsLocked	1
+../Utils/Source/lcd.c:39:6:LCD_Init	4
+../Utils/Source/lcd.c:75:6:LCD_Set_Window	5
+../Utils/Source/lcd.c:100:6:LCD_Write_Pixels	1
+../Utils/Source/lcd.c:105:6:LCD_Fill_Rect	7

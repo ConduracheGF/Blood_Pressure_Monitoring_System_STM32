@@ -12,10 +12,9 @@
  *      Author: Condurache Gabriel
  */
 #include "main.h"
+#include "Utils/Header/lcd.h"
 #include "IO/Header/touchscreen_io.h"
 
-#define TOUCH_ADC_SAMPLES 4
-#define TOUCH_ADC_TIMEOUT_MS 10
 #define TOUCH_XM_ADC_CHANNEL ADC_CHANNEL_4
 #define TOUCH_YP_ADC_CHANNEL ADC_CHANNEL_8
 
@@ -30,6 +29,10 @@ static const TouchPin_t xp = {LCD_D0_GPIO_Port, LCD_D0_Pin};
 static const TouchPin_t xm = {LCD_RS_GPIO_Port, LCD_RS_Pin};
 static const TouchPin_t yp = {LCD_CS_GPIO_Port, LCD_CS_Pin};
 static const TouchPin_t ym = {LCD_D1_GPIO_Port, LCD_D1_Pin};
+
+volatile TouchState_t touchState = TOUCH_STATE_IDLE;
+volatile uint16_t adcValX = 0, adcValY = 0, adcValZ = 0;
+volatile bool adcConversionDone = false;
 
 static void Pin_Output(const TouchPin_t *touch_pin, GPIO_PinState level)
 {
@@ -72,91 +75,118 @@ static void Restore_Lcd_Pins()
 	Pin_Output(&ym, GPIO_PIN_SET);
 }
 
-static uint16_t Read_Adc(uint32_t channel)
-{
-	ADC_ChannelConfTypeDef _config = {0};
-	_config.Channel = channel;
-	_config.Rank = 1;
-	_config.SamplingTime = ADC_SAMPLETIME_144CYCLES;
-	HAL_ADC_ConfigChannel(&hadc1, &_config);
 
-	uint32_t _sum = 0;
-	for (uint8_t sample = 0; sample <= TOUCH_ADC_SAMPLES; sample++)
+// ISR de finalizare a conversiei ADC
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc) {
+	if (hadc->Instance == ADC1)
 	{
-		HAL_ADC_Start(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, TOUCH_ADC_TIMEOUT_MS);
-
-		uint32_t _value = HAL_ADC_GetValue(&hadc1);
-		HAL_ADC_Stop(&hadc1);
-
-		if (sample > 0)
-		{
-			_sum += _value;
-		}
+		adcConversionDone = true;
 	}
-	return (_sum / TOUCH_ADC_SAMPLES);
 }
 
-/*
- * Se aplica tensiune pe folia X cu XP HIGH si XM LOW
- * Se masoara tensiunea pe YP pentru a afla pozitia X
- */
+void Touch_IO_Process()
+{
+	if (LCD_IsLocked())	return;
+
+	ADC_ChannelConfTypeDef config = {0};
+	config.Rank = 1;
+	config.SamplingTime = ADC_SAMPLETIME_144CYCLES;
+
+	switch(touchState) {
+		case TOUCH_STATE_IDLE:
+		case TOUCH_STATE_DATA_READY:
+			break;
+		/*
+		 * XP = LOW
+		 * YM = HIGH
+		 * Se masoara XM si YP => FARA touch: XM = 0 ; YP = maxim => presiune = 0
+		 * 						  CU touch: la contact diferenta scade, iar presiunea devine mare
+		 */
+		case TOUCH_STATE_PREP_Z:
+			Pin_Output(&xp, GPIO_PIN_RESET);
+			Pin_Output(&ym, GPIO_PIN_SET);
+			Pin_Analog(&xm);
+			Pin_Analog(&yp);
+
+			config.Channel = TOUCH_XM_ADC_CHANNEL;
+			HAL_ADC_ConfigChannel(&hadc1, &config);
+			adcConversionDone = false;
+			HAL_ADC_Start_IT(&hadc1);
+			touchState = TOUCH_STATE_WAIT_Z;
+			break;
+		case TOUCH_STATE_WAIT_Z:
+			if (adcConversionDone){
+				adcValZ = HAL_ADC_GetValue(&hadc1);
+				touchState = TOUCH_STATE_PREP_X;
+			}
+			break;
+		/*
+		 * Se aplica tensiune pe folia X cu XP HIGH si XM LOW
+		 * Se masoara tensiunea pe YP pentru a afla pozitia X
+		 */
+		case TOUCH_STATE_PREP_X:
+			Pin_Output(&xp, GPIO_PIN_SET);
+			Pin_Output(&xm, GPIO_PIN_RESET);
+			Pin_Floating(&ym);
+			Pin_Analog(&yp);
+
+			config.Channel = TOUCH_YP_ADC_CHANNEL;
+			HAL_ADC_ConfigChannel(&hadc1, &config);
+
+			adcConversionDone = false;
+			HAL_ADC_Start_IT(&hadc1);
+			touchState = TOUCH_STATE_WAIT_X;
+			break;
+		case TOUCH_STATE_WAIT_X:
+			if (adcConversionDone) {
+				adcValX = HAL_ADC_GetValue(&hadc1);
+				touchState = TOUCH_STATE_PREP_Y;
+			}
+			break;
+
+		/*
+		 * Se aplica tensiune pe folia Y cu YP HIGH si YM LOW
+		 * Se masoara tensiunea pe XM pentru a afla pozitia Y
+		 */
+		case TOUCH_STATE_PREP_Y:
+			Pin_Output(&yp, GPIO_PIN_SET);
+			Pin_Output(&ym, GPIO_PIN_RESET);
+			Pin_Floating(&xp);
+			Pin_Analog(&xm);
+
+			config.Channel = TOUCH_XM_ADC_CHANNEL;
+			HAL_ADC_ConfigChannel(&hadc1, &config);
+
+			adcConversionDone = false;
+			HAL_ADC_Start_IT(&hadc1);
+			touchState = TOUCH_STATE_WAIT_Y;
+			break;
+		case TOUCH_STATE_WAIT_Y:
+			if (adcConversionDone){
+				adcValY = HAL_ADC_GetValue(&hadc1);
+				Restore_Lcd_Pins();
+				touchState = TOUCH_STATE_DATA_READY;
+			}
+			break;
+		default:
+			break;
+	}
+}
+
 uint16_t Touch_IO_Read_X()
 {
-	Pin_Output(&xp, GPIO_PIN_SET);
-	Pin_Output(&xm, GPIO_PIN_RESET);
-	Pin_Floating(&ym);
-	Pin_Analog(&yp);
-	HAL_Delay(1);
-
-	uint16_t _value = Read_Adc(TOUCH_YP_ADC_CHANNEL);
-	Restore_Lcd_Pins();
-	return _value;
+	return adcValX;
 }
 
-/*
- * Se aplica tensiune pe folia Y cu YP HIGH si YM LOW
- * Se masoara tensiunea pe XM pentru a afla pozitia Y
- */
 uint16_t Touch_IO_Read_Y()
 {
-	Pin_Output(&yp, GPIO_PIN_SET);
-	Pin_Output(&ym, GPIO_PIN_RESET);
-	Pin_Floating(&xp);
-	Pin_Analog(&xm);
-	HAL_Delay(1);
-
-	uint16_t _value = Read_Adc(TOUCH_XM_ADC_CHANNEL);
-	Restore_Lcd_Pins();
-	return _value;
+	return adcValY;
 }
 
-/*
- * XP = LOW
- * YM = HIGH
- * Se masoara XM si YP => FARA touch: XM = 0 ; YP = maxim => presiune = 0
- * 						  CU touch: la contact diferenta scade, iar presiunea devine mare
- */
+// Calcul de presiune estimativ
 uint16_t Touch_IO_Read_Pressure()
 {
-	Pin_Output(&xp, GPIO_PIN_RESET);
-	Pin_Output(&ym, GPIO_PIN_SET);
-	Pin_Analog(&xm);
-	Pin_Analog(&yp);
-	HAL_Delay(1);
-
-	int32_t _z1 = Read_Adc(TOUCH_XM_ADC_CHANNEL);
-	int32_t _z2 = Read_Adc(TOUCH_YP_ADC_CHANNEL);
-	Restore_Lcd_Pins();
-
-	int32_t _pressure = TOUCH_IO_ADC_MAX - (_z2 - _z1);
-	if (_pressure < 0)
-	{
-		_pressure = 0;
-	}
-	if (_pressure > TOUCH_IO_ADC_MAX)
-	{
-		_pressure = TOUCH_IO_ADC_MAX;
-	}
-	return (uint16_t)_pressure;
+	if (adcValZ < 4050)
+		return (TOUCH_IO_ADC_MAX - adcValZ);
+	return 0;
 }

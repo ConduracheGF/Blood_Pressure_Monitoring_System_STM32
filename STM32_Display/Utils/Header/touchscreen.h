@@ -28,6 +28,11 @@ typedef struct {
 	uint16_t y;
 } TouchPoint_t;
 
+/*
+ * Pentru schimbarile dintre ecrane
+ * Arunca punctul retinut
+ */
+void Touch_Flush();
 // Se verifica daca ecranul este apasat pe coordonatele corespunzatoare
 bool Touch_Get_Point(TouchPoint_t *point);
 

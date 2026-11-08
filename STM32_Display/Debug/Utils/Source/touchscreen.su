@@ -1,1 +1,2 @@
-../Utils/Source/touchscreen.c:29:6:Touch_Get_Point	16	static
+../Utils/Source/touchscreen.c:32:6:Touch_Get_Point	24	static
+../Utils/Source/touchscreen.c:60:6:Touch_Flush	0	static

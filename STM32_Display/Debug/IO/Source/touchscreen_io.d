@@ -29,6 +29,7 @@ IO/Source/touchscreen_io.o: ../IO/Source/touchscreen_io.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h \
  C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/touchscreen_io.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -61,4 +62,5 @@ IO/Source/touchscreen_io.o: ../IO/Source/touchscreen_io.c \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h:
 C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/touchscreen_io.h:
