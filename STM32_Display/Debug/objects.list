@@ -1,5 +1,4 @@
 "./App/Source/app.o"
-"./App/Source/vitals.o"
 "./Core/Src/main.o"
 "./Core/Src/stm32f4xx_hal_msp.o"
 "./Core/Src/stm32f4xx_it.o"
@@ -43,3 +42,6 @@
 "./Utils/Source/cardSD.o"
 "./Utils/Source/lcd.o"
 "./Utils/Source/touchscreen.o"
+"./Worker/Source/acquisition.o"
+"./Worker/Source/display.o"
+"./Worker/Source/vitals.o"

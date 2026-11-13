@@ -1,0 +1,4 @@
+../Worker/Source/acquisition.c:15:6:Acquisition_Init	0	static
+../Worker/Source/acquisition.c:21:6:Acquisition_Start	8	static
+../Worker/Source/acquisition.c:32:6:Acquisition_Run	16	static
+../Worker/Source/acquisition.c:81:20:Acquisition_Get_State	0	static

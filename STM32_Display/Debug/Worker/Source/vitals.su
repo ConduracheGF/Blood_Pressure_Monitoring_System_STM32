@@ -1,0 +1,5 @@
+../Worker/Source/vitals.c:38:6:Vitals_Seed	0	static
+../Worker/Source/vitals.c:43:6:Vitals_Generate	16	static
+../Worker/Source/vitals.c:73:6:Vitals_Simulation_Init	8	static
+../Worker/Source/vitals.c:84:6:Vitals_Simulation_Step	0	static
+../Worker/Source/vitals.c:103:15:System_Get_State	0	static

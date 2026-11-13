@@ -34,4 +34,5 @@ Middlewares/Third_Party/FatFs/src \
 Middlewares/Third_Party/FatFs/src/option \
 UI/Source \
 Utils/Source \
+Worker/Source \
 

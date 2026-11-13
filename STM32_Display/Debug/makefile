@@ -9,6 +9,7 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include Worker/Source/subdir.mk
 -include Utils/Source/subdir.mk
 -include UI/Source/subdir.mk
 -include Middlewares/Third_Party/FatFs/src/option/subdir.mk

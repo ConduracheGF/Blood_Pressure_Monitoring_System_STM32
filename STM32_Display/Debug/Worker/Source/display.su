@@ -1,0 +1,3 @@
+../Worker/Source/display.c:49:13:Enter_Results	16	static
+../Worker/Source/display.c:101:6:Display_Init	8	static
+../Worker/Source/display.c:111:6:Display_Run	16	static,ignoring_inline_asm

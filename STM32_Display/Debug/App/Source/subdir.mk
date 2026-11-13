@@ -5,16 +5,13 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
-../App/Source/app.c \
-../App/Source/vitals.c 
+../App/Source/app.c 
 
 OBJS += \
-./App/Source/app.o \
-./App/Source/vitals.o 
+./App/Source/app.o 
 
 C_DEPS += \
-./App/Source/app.d \
-./App/Source/vitals.d 
+./App/Source/app.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -24,7 +21,7 @@ App/Source/%.o App/Source/%.su App/Source/%.cyclo: ../App/Source/%.c App/Source/
 clean: clean-App-2f-Source
 
 clean-App-2f-Source:
-	-$(RM) ./App/Source/app.cyclo ./App/Source/app.d ./App/Source/app.o ./App/Source/app.su ./App/Source/vitals.cyclo ./App/Source/vitals.d ./App/Source/vitals.o ./App/Source/vitals.su
+	-$(RM) ./App/Source/app.cyclo ./App/Source/app.d ./App/Source/app.o ./App/Source/app.su
 
 .PHONY: clean-App-2f-Source
 

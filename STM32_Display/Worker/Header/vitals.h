@@ -54,7 +54,18 @@ typedef struct {
 	TensiuneType_t tensiune;
 } Vitals_t;
 
+typedef struct {
+	uint16_t cuffPressure;
+	uint8_t progressPercent;
+	bool isMeasuring;
+	bool resultsReady;
+	Vitals_t finalResults;
+} SystemData_t;
+
 void Vitals_Seed(uint32_t seed);
 void Vitals_Generate(Vitals_t *vitals);
+void Vitals_Simulation_Init();
+void Vitals_Simulation_Step(uint32_t elapsedMS);
+SystemData_t* System_Get_State();
 
 #endif /* HEADER_VITALS_H_ */

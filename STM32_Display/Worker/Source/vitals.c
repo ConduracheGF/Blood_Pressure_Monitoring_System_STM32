@@ -6,7 +6,10 @@
  */
 
 #include <stdlib.h>
-#include "App/Header/vitals.h"
+#include "Worker/Header/vitals.h"
+
+static SystemData_t systemState = {0};
+static Vitals_t tempVitals = {0};
 
 static uint16_t Random_Between(uint16_t minim, uint16_t maxim)
 {
@@ -65,4 +68,39 @@ void Vitals_Generate(Vitals_t *vitals)
 		vitals->tensiune.risk = false;
 		vitals->tensiune.type = NORMAL;
 	}
+}
+
+void Vitals_Simulation_Init()
+{
+	systemState.isMeasuring = true;
+	systemState.resultsReady = false;
+	systemState.progressPercent = 0;
+	systemState.cuffPressure = 0;
+
+	Vitals_Generate(&tempVitals);
+	systemState.finalResults = tempVitals;
+}
+
+void Vitals_Simulation_Step(uint32_t elapsedMS)
+{
+	uint32_t totalDurationMS = 10000;
+
+	if (elapsedMS >= totalDurationMS)
+	{
+		systemState.isMeasuring = false;
+		systemState.resultsReady = true;
+		systemState.progressPercent = 100;
+		return;
+	}
+
+	uint8_t _progress = (uint32_t)elapsedMS * 100 / totalDurationMS;
+	uint16_t _simulatedPressure = _progress * 180 / 100;
+
+	systemState.progressPercent = _progress;
+	systemState.cuffPressure = _simulatedPressure;
+}
+
+SystemData_t* System_Get_State()
+{
+	return &systemState;
 }

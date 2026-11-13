@@ -29,14 +29,9 @@ App/Source/app.o: ../App/Source/app.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/App/Header/app.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/App/Header/vitals.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/touchscreen.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/sys_io.h \
- C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/touchscreen_io.h
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/acquisition.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/vitals.h \
+ C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/display.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -68,11 +63,6 @@ App/Source/app.o: ../App/Source/app.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pwr_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/App/Header/app.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/App/Header/vitals.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/UI/Header/screens.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/cardFS.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/lcd.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Utils/Header/touchscreen.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/sys_io.h:
-C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/IO/Header/touchscreen_io.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/acquisition.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/vitals.h:
+C:/Users/Condurache\ Gabriel/Desktop/LICENTA/STM32_Display/Worker/Header/display.h:
